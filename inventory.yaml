@@ -1,0 +1,4 @@
+all:
+  hosts:
+    eva-server:
+      ansible_host: 188.165.245.40

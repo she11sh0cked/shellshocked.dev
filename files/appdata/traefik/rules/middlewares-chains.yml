@@ -1,0 +1,18 @@
+http:
+  middlewares:
+    public:
+      chain:
+        middlewares:
+          - middlewares-rate-limit
+          - middlewares-https-redirectscheme
+          - middlewares-secure-headers
+          - middlewares-compress
+
+    protected:
+      chain:
+        middlewares:
+          - middlewares-rate-limit
+          - middlewares-https-redirectscheme
+          - middlewares-secure-headers
+          - middlewares-oauth
+          - middlewares-compress

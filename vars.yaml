@@ -1,0 +1,40 @@
+user: ubuntu
+uid: 1000
+gid: 1000
+timezone: Europe/Berlin
+
+ansible_packages:
+  - python3-pip
+
+ansible_python_packages:
+  - docker
+  - docker-compose
+  - passlib
+
+packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-compose-plugin
+
+user_dir: "/home/{{ user }}"
+storage_dir: "/mnt/storage"
+
+appdata_dir: "{{ user_dir }}/appdata"
+secrets_dir: "{{ user_dir }}/secrets"
+downloads_dir: "{{ user_dir }}/downloads"
+media_dir: "{{ user_dir }}/media"
+
+domain: she11sh0cked.ml
+
+users:
+  root:
+    name:
+    pass:
+
+email:
+
+providers:
+  google:
+    client_id:
+    client_secret:

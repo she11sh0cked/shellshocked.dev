@@ -1,0 +1,411 @@
+version: "3.9"
+
+########################### NETWORKS
+
+networks:
+  default:
+    driver: bridge
+  reverse_proxy:
+    name: reverse_proxy
+    driver: bridge
+
+########################### SECRETS
+
+secrets:
+  traefik_forward_auth:
+    file: $SECRETS_DIR/traefik_forward_auth
+
+########################### EXTENSION FIELDS
+
+# Common environment values
+x-environment: &default-tz-puid-pgid
+  TZ: $TZ
+  PUID: $PUID
+  PGID: $PGID
+
+# Keys common to some of the core services that we always to automatically restart on failure
+x-common-keys-core: &common-keys-core
+  environment:
+    <<: *default-tz-puid-pgid
+  networks:
+    - reverse_proxy
+  security_opt:
+    - no-new-privileges:true
+  restart: always
+
+# Keys common to some of the dependent services/apps
+x-common-keys-apps: &common-keys-apps
+  <<: *common-keys-core
+  restart: unless-stopped
+
+# Keys common to some of the services in media-services.txt
+x-common-keys-media: &common-keys-media
+  <<: *common-keys-apps
+  restart: "no"
+
+########################### SERVICES
+services:
+  ############################# FRONTENDS
+
+  # Traefik - Reverse Proxy
+  traefik:
+    <<: *common-keys-core
+    container_name: traefik
+    image: traefik:latest
+    command:
+      - --api=true
+      - --api.insecure=true
+
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --providers.file.directory=/rules
+      - --providers.file.watch=true
+
+      - --serversTransport.insecureSkipVerify=true
+
+      # - --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory # Staging. Uncomment for testing
+      - --certificatesResolvers.le.acme.email=$ACME_EMAIL
+      - --certificatesResolvers.le.acme.storage=/acme.json
+      - --certificatesResolvers.le.acme.httpChallenge.entryPoint=http
+      - --certificatesResolvers.le.acme.dnsChallenge.delayBeforeCheck=90 # To delay DNS check and reduce LE hitrate
+
+      - --entryPoints.http.address=:80
+
+      - --entryPoints.https.address=:443
+      - --entrypoints.https.forwardedHeaders.trustedIPs=$LOCAL_IPS
+      - --entryPoints.https.http.tls.certResolver=le
+      - --entrypoints.https.http.tls.options=tls-opts@file
+
+      - --entryPoints.wireguard.address=:51820/udp
+    ports:
+      - 80:80
+      - 443:443
+      - 51820:51820/udp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - $APPDATA_DIR/traefik/rules:/rules
+      - $APPDATA_DIR/traefik/acme.json:/acme.json
+    environment:
+      <<: *default-tz-puid-pgid
+      DOMAIN: $DOMAIN
+    labels:
+      - "traefik.enable=true"
+      # HTTP-to-HTTPS Redirect
+      - "traefik.http.routers.http-catchall.entrypoints=http"
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # HTTP Routers
+      - "traefik.http.routers.traefik-rtr.entrypoints=https"
+      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAIN`)"
+      # TODO: Use wildcard cert instead of a cert for each subdomain
+      ## Middlewares
+      - "traefik.http.routers.traefik-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.traefik-rtr.service=api@internal"
+
+  # Google OAuth - Single Sign On using OAuth 2.0
+  oauth:
+    <<: *common-keys-core
+    container_name: oauth
+    image: thomseddon/traefik-forward-auth:latest
+    environment:
+      <<: *default-tz-puid-pgid
+      CONFIG: /config
+      COOKIE_DOMAIN: $DOMAIN
+      INSECURE_COOKIE: "false"
+      AUTH_HOST: oauth.$DOMAIN
+      URL_PATH: /_oauth
+      LOG_FORMAT: text
+      LIFETIME: 86400 # 1 day
+      DEFAULT_ACTION: auth
+      DEFAULT_PROVIDER: google
+    secrets:
+      - source: traefik_forward_auth
+        target: /config
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.oauth-rtr.tls=true"
+      - "traefik.http.routers.oauth-rtr.entrypoints=https"
+      - "traefik.http.routers.oauth-rtr.rule=Host(`oauth.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.oauth-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.oauth-rtr.service=oauth-svc"
+      - "traefik.http.services.oauth-svc.loadbalancer.server.port=4181"
+
+  # Portainer - WebUI for Containers
+  portainer:
+    <<: *common-keys-core
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - $APPDATA_DIR/portainer:/data
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.portainer-rtr.entrypoints=https"
+      - "traefik.http.routers.portainer-rtr.rule=Host(`portainer.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.portainer-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.portainer-rtr.service=portainer-svc"
+      - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
+
+  # Heimdall - Application Dashboard
+  heimdall:
+    <<: *common-keys-core
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    volumes:
+      - $APPDATA_DIR/heimdall:/config
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.heimdall-rtr.entrypoints=https"
+      - "traefik.http.routers.heimdall-rtr.rule=Host(`$DOMAIN`,`www.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.heimdall-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.heimdall-rtr.service=heimdall-svc"
+      - "traefik.http.services.heimdall-svc.loadbalancer.server.port=80"
+
+  ############################# DOWNLOADERS
+
+  # qBittorrent - Torrent downloader
+  qbittorrent:
+    <<: *common-keys-apps
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    volumes:
+      - $APPDATA_DIR/qbittorrent:/config
+      - $DOWNLOADS_DIR:/data/downloads
+    environment:
+      <<: *default-tz-puid-pgid
+      UMASK: 002
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.qbittorrent-rtr.entrypoints=https"
+      - "traefik.http.routers.qbittorrent-rtr.rule=Host(`qbit.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.qbittorrent-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.qbittorrent-rtr.service=qbittorrent-svc"
+      - "traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080"
+
+  ############################# INDEXERS
+
+  # Prowlarr - Torrent proxy
+  prowlarr:
+    <<: *common-keys-apps
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - $APPDATA_DIR/prowlarr:/config
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.prowlarr-rtr.entrypoints=https"
+      - "traefik.http.routers.prowlarr-rtr.rule=Host(`prowlarr.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.prowlarr-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.prowlarr-rtr.service=prowlarr-svc"
+      - "traefik.http.services.prowlarr-svc.loadbalancer.server.port=9696"
+
+  ############################# PVRS
+
+  # Radarr - Movie management
+  radarr:
+    <<: *common-keys-media
+    image: lscr.io/linuxserver/radarr:nightly
+    container_name: radarr
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - $APPDATA_DIR/radarr:/config
+      - $DOWNLOADS_DIR/complete:/data/downloads/complete
+      - $MEDIA_DIR/movies:/data/media/movies
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.radarr-rtr.entrypoints=https"
+      - "traefik.http.routers.radarr-rtr.rule=Host(`radarr.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.radarr-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.radarr-rtr.service=radarr-svc"
+      - "traefik.http.services.radarr-svc.loadbalancer.server.port=7878"
+
+  # Sonarr - TV Shows management
+  sonarr:
+    <<: *common-keys-media
+    image: lscr.io/linuxserver/sonarr
+    container_name: sonarr
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - $APPDATA_DIR/sonarr:/config
+      - $DOWNLOADS_DIR/complete:/data/downloads/complete
+      - $MEDIA_DIR/shows:/data/media/shows
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.sonarr-rtr.entrypoints=https"
+      - "traefik.http.routers.sonarr-rtr.rule=Host(`sonarr.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.sonarr-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.sonarr-rtr.service=sonarr-svc"
+      - "traefik.http.services.sonarr-svc.loadbalancer.server.port=8989"
+
+  ############################# MEDIA
+
+  # Jellyfin - Media Server
+  jellyfin:
+    <<: *common-keys-media
+    image: ghcr.io/confusedpolarbear/jellyfin-intro-skipper:latest
+    container_name: jellyfin
+    volumes:
+      - /dev/shm:/data/transcode
+      - $APPDATA_DIR/jellyfin:/config
+      - $MEDIA_DIR:/data/media
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.jellyfin-rtr.entrypoints=https"
+      - "traefik.http.routers.jellyfin-rtr.rule=Host(`jellyfin.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.jellyfin-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.jellyfin-rtr.service=jellyfin-svc"
+      - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
+
+  # Jellyfin Accounts - Jellyfin Account Management
+  jfa-go:
+    <<: *common-keys-media
+    image: hrfee/jfa-go:latest
+    container_name: jfa-go
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - $APPDATA_DIR/jfa-go:/data
+      - $APPDATA_DIR/jellyfin:/jf
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.jfa-go-rtr.entrypoints=https"
+      - "traefik.http.routers.jfa-go-rtr.rule=Host(`jfa.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.jfa-go-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.jfa-go-rtr.service=jfa-go-svc"
+      - "traefik.http.services.jfa-go-svc.loadbalancer.server.port=8056"
+
+  # Jellyseerr - Media Request Management
+  jellyseerr:
+    <<: *common-keys-media
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    volumes:
+      - $APPDATA_DIR/jellyseerr:/app/config
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.jellyseerr-rtr.entrypoints=https"
+      - "traefik.http.routers.jellyseerr-rtr.rule=Host(`jellyseerr.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.jellyseerr-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.jellyseerr-rtr.service=jellyseerr-svc"
+      - "traefik.http.services.jellyseerr-svc.loadbalancer.server.port=5055"
+
+  ############################# MEDIA FILE MANAGEMENT
+
+  # Bazarr - Subtitle Management
+  bazarr:
+    <<: *common-keys-media
+    image: lscr.io/linuxserver/bazarr:development
+    container_name: bazarr
+    volumes:
+      - $APPDATA_DIR/bazarr:/config
+      - $MEDIA_DIR:/data/media
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.bazarr-rtr.entrypoints=https"
+      - "traefik.http.routers.bazarr-rtr.rule=Host(`bazarr.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.bazarr-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.bazarr-rtr.service=bazarr-svc"
+      - "traefik.http.services.bazarr-svc.loadbalancer.server.port=6767"
+
+  ############################# UTILITIES
+
+  # Dozzle - Real-time Docker Log Viewer
+  dozzle:
+    <<: *common-keys-apps
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.dozzle-rtr.entrypoints=https"
+      - "traefik.http.routers.dozzle-rtr.rule=Host(`dozzle.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.dozzle-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.dozzle-rtr.service=dozzle-svc"
+      - "traefik.http.services.dozzle-svc.loadbalancer.server.port=8080"
+
+  # Wireguard - VPN
+  wireguard:
+    <<: *common-keys-apps
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      <<: *default-tz-puid-pgid
+      SERVERURL: vpn.$DOMAIN
+      PEERS: portasynthinca3
+    volumes:
+      - $APPDATA_DIR/wireguard:/config
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    labels:
+      - "traefik.enable=true"
+      ## UDP Routers
+      - "traefik.udp.routers.wireguard-rtr.entrypoints=wireguard"
+      ## UDP Services
+      - "traefik.udp.routers.wireguard-rtr.service=wireguard-svc"
+      - "traefik.udp.services.wireguard-svc.loadbalancer.server.port=51820"
+
+  ############################# MAINTENANCE
+
+  # Watchtower - Automatic Docker Container Updates
+  watchtower:
+    <<: *common-keys-apps
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # Docker-GC - Automatic Docker Garbage Collection
+  dockergc:
+    <<: *common-keys-apps
+    image: clockworksoul/docker-gc-cron:latest
+    container_name: docker-gc
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      <<: *default-tz-puid-pgid
+      CRON: 0 0 0 * * # Every day at midnight
+      FORCE_IMAGE_REMOVAL: 1
+      GRACE_PERIOD_SECONDS: 604800 # 7 days
+      CLEAN_UP_VOLUMES: 1
