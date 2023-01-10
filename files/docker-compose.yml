@@ -375,6 +375,25 @@ services:
       - "traefik.http.routers.dozzle-rtr.service=dozzle-svc"
       - "traefik.http.services.dozzle-svc.loadbalancer.server.port=8080"
 
+    # File Browser - Explorer
+  filebrowser:
+    <<: *common-keys-apps
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    volumes:
+      - $APPDATA_DIR/filebrowser:/config
+      - $USER_DIR:/srv
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.filebrowser-rtr.entrypoints=https"
+      - "traefik.http.routers.filebrowser-rtr.rule=Host(`files.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.filebrowser-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.filebrowser-rtr.service=filebrowser-svc"
+      - "traefik.http.services.filebrowser-svc.loadbalancer.server.port=80"
+
   # Neko - Web-based Browser
   neko:
     <<: *common-keys-apps
