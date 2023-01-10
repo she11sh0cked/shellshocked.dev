@@ -75,12 +75,9 @@ services:
       - --entrypoints.https.forwardedHeaders.trustedIPs=$LOCAL_IPS
       - --entryPoints.https.http.tls.certResolver=le
       - --entrypoints.https.http.tls.options=tls-opts@file
-
-      - --entryPoints.wireguard.address=:51820/udp
     ports:
       - 80:80
       - 443:443
-      - 51820:51820/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $APPDATA_DIR/traefik/rules:/rules
@@ -400,31 +397,6 @@ services:
       ## HTTP Services
       - "traefik.http.routers.neko-rtr.service=neko-svc"
       - "traefik.http.services.neko-svc.loadbalancer.server.port=8080"
-
-  # TODO: Remove
-  # Wireguard - VPN
-  wireguard:
-    <<: *common-keys-apps
-    image: lscr.io/linuxserver/wireguard:latest
-    container_name: wireguard
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    environment:
-      <<: *default-tz-puid-pgid
-      SERVERURL: vpn.$DOMAIN
-      PEERS: portasynthinca3
-    volumes:
-      - $APPDATA_DIR/wireguard:/config
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-    labels:
-      - "traefik.enable=true"
-      ## UDP Routers
-      - "traefik.udp.routers.wireguard-rtr.entrypoints=wireguard"
-      ## UDP Services
-      - "traefik.udp.routers.wireguard-rtr.service=wireguard-svc"
-      - "traefik.udp.services.wireguard-svc.loadbalancer.server.port=51820"
 
   ############################# MAINTENANCE
 
