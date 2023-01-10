@@ -378,6 +378,30 @@ services:
       - "traefik.http.routers.dozzle-rtr.service=dozzle-svc"
       - "traefik.http.services.dozzle-svc.loadbalancer.server.port=8080"
 
+  # Neko - Web-based Browser
+  neko:
+    <<: *common-keys-apps
+    image: "m1k1o/neko:latest"
+    container_name: neko
+    ports:
+      - "52000-52100:52000-52100/udp" # TODO: treafik labels
+    environment:
+      <<: *default-tz-puid-pgid
+      NEKO_PASSWORD_ADMIN: $NEKO_PASSWORD
+      NEKO_EPR: 52000-52100
+      NEKO_ICELITE: 1
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.neko-rtr.entrypoints=https"
+      - "traefik.http.routers.neko-rtr.rule=Host(`neko.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.neko-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.neko-rtr.service=neko-svc"
+      - "traefik.http.services.neko-svc.loadbalancer.server.port=8080"
+
+  # TODO: Remove
   # Wireguard - VPN
   wireguard:
     <<: *common-keys-apps
