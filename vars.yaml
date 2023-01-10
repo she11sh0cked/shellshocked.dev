@@ -27,14 +27,18 @@ media_dir: "{{ user_dir }}/media"
 
 domain: she11sh0cked.ml
 
-users:
-  root:
-    name:
-    pass:
+admin:
+  email:
+  name:
+  pass:
 
-email:
-
-providers:
-  google:
+services:
+  oauth:
     client_id:
     client_secret:
+
+  sonarr:
+    api_key:
+
+  radarr:
+    api_key:
