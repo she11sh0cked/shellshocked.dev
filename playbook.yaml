@@ -151,3 +151,17 @@
       community.docker.docker_compose:
         project_src: "{{ user_dir }}"
         state: present
+
+    - name: Wait for containers to start
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: 80
+        state: started
+        delay: 5
+        timeout: 300
+
+    - name: Fix AuthenticationMethod in prowlarr's config.xml
+      ansible.builtin.replace:
+        path: "{{ appdata_dir }}/prowlarr/config.xml"
+        regexp: '^(\s*<AuthenticationMethod>).*(</AuthenticationMethod>)$'
+        replace: '\1External\2'
