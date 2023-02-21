@@ -25,7 +25,7 @@ secrets_dir: "{{ user_dir }}/secrets"
 downloads_dir: "{{ user_dir }}/downloads"
 media_dir: "{{ user_dir }}/media"
 
-domain: she11sh0cked.ml
+domain: shellshocked.dev
 
 admin:
   email:
