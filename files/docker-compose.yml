@@ -203,6 +203,33 @@ services:
       - "traefik.http.routers.qbittorrent-rtr.service=qbittorrent-svc"
       - "traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080"
 
+  # Flood - A modern web UI for various torrent clients
+  flood:
+    <<: *common-keys-apps
+    image: jesec/flood:master
+    container_name: flood
+    depends_on:
+      - qbittorrent
+    volumes:
+      - $APPDATA_DIR/flood:/config
+      - $DOWNLOADS_DIR:/data/downloads
+    environment:
+      <<: *default-tz-puid-pgid
+      FLOOD_OPTION_AUTH: none
+      FLOOD_OPTION_QBURL: http://qbittorrent:8080
+      FLOOD_OPTION_QBUSER: admin
+      FLOOD_OPTION_QBPASS: adminadmin
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.flood-rtr.entrypoints=https"
+      - "traefik.http.routers.flood-rtr.rule=Host(`flood.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.flood-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.flood-rtr.service=flood-svc"
+      - "traefik.http.services.flood-svc.loadbalancer.server.port=3000"
+
   # Unpackerr - Automated Unpacking
   unpackerr:
     <<: *common-keys-apps
