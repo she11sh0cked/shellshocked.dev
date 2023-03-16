@@ -15,6 +15,7 @@ packages:
   - docker-ce
   - docker-ce-cli
   - containerd.io
+  - docker-buildx-plugin
   - docker-compose-plugin
 
 user_dir: "/home/{{ user }}"
