@@ -27,6 +27,7 @@ downloads_dir: "{{ user_dir }}/downloads"
 media_dir: "{{ user_dir }}/media"
 
 domain: shellshocked.dev
+cloudflare_api_key:
 
 admin:
   email:
