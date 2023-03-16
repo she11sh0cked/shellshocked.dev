@@ -434,6 +434,10 @@ services:
     <<: *common-keys-apps
     image: containrrr/watchtower:latest
     container_name: watchtower
+    environment:
+      <<: *default-tz-puid-pgid
+      WATCHTOWER_NOTIFICATIONS: shoutrrr
+      WATCHTOWER_NOTIFICATION_URL: $WATCHTOWER_NOTIFICATION_URL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
