@@ -393,6 +393,8 @@ services:
     volumes:
       - $APPDATA_DIR/filebrowser:/config
       - $USER_DIR:/srv
+      - $DOWNLOADS_DIR:/srv/downloads
+      - $MEDIA_DIR:/srv/media
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
