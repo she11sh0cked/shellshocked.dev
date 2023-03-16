@@ -338,6 +338,8 @@ services:
     <<: *common-keys-media
     image: hrfee/jfa-go:latest
     container_name: jfa-go
+    depends_on:
+      - jellyfin
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - $APPDATA_DIR/jfa-go:/data
