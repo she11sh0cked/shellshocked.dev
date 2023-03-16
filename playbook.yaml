@@ -154,7 +154,7 @@
         path: "{{ appdata_dir }}/traefik/acme.json"
         owner: "{{ user }}"
         group: "{{ user }}"
-        state: touch
+        state: file
         mode: 0600
 
     - name: Create docker containers
