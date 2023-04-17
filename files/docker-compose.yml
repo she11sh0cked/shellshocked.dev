@@ -420,7 +420,8 @@ services:
     image: filebrowser/filebrowser:s6
     container_name: filebrowser
     volumes:
-      - $APPDATA_DIR/filebrowser:/config
+      - $APPDATA_DIR/filebrowser/config:/config
+      - $APPDATA_DIR/filebrowser/database:/database
       - $USER_DIR:/srv
       - $DOWNLOADS_DIR:/srv/downloads
       - $MEDIA_DIR:/srv/media
