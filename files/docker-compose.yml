@@ -187,6 +187,8 @@ services:
     environment:
       <<: *default-tz-puid-pgid
       UMASK: 002
+    ports:
+      - 6881:6881
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
