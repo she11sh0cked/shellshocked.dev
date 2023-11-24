@@ -38,11 +38,6 @@ x-common-keys-apps: &common-keys-apps
   <<: *common-keys-core
   restart: unless-stopped
 
-# Keys common to some of the services in media-services.txt
-x-common-keys-media: &common-keys-media
-  <<: *common-keys-apps
-  restart: "no"
-
 ########################### SERVICES
 services:
   ############################# FRONTENDS
@@ -164,7 +159,7 @@ services:
   # Heimdall - Application Dashboard
   heimdall:
     <<: *common-keys-core
-    image: lscr.io/linuxserver/heimdall:latest
+    image: ghcr.io/linuxserver/heimdall:latest
     container_name: heimdall
     volumes:
       - $APPDATA_DIR/heimdall:/config
@@ -184,7 +179,7 @@ services:
   # qBittorrent - Torrent downloader
   qbittorrent:
     <<: *common-keys-apps
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: ghcr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     volumes:
       - $APPDATA_DIR/qbittorrent:/config
@@ -251,7 +246,7 @@ services:
   # Prowlarr - Torrent proxy
   prowlarr:
     <<: *common-keys-apps
-    image: lscr.io/linuxserver/prowlarr:develop
+    image: ghcr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -271,8 +266,8 @@ services:
 
   # Radarr - Movie management
   radarr:
-    <<: *common-keys-media
-    image: lscr.io/linuxserver/radarr:nightly
+    <<: *common-keys-apps
+    image: ghcr.io/linuxserver/radarr:nightly
     container_name: radarr
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -292,8 +287,8 @@ services:
 
   # Sonarr - TV Shows management
   sonarr:
-    <<: *common-keys-media
-    image: lscr.io/linuxserver/sonarr
+    <<: *common-keys-apps
+    image: ghcr.io/linuxserver/sonarr:develop
     container_name: sonarr
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -315,7 +310,7 @@ services:
 
   # Jellyfin - Media Server
   jellyfin:
-    <<: *common-keys-media
+    <<: *common-keys-apps
     image: ghcr.io/confusedpolarbear/jellyfin-intro-skipper:latest
     container_name: jellyfin
     volumes:
@@ -335,7 +330,7 @@ services:
 
   # Jellyfin Accounts - Jellyfin Account Management
   jfa-go:
-    <<: *common-keys-media
+    <<: *common-keys-apps
     image: hrfee/jfa-go:latest
     container_name: jfa-go
     depends_on:
@@ -357,7 +352,7 @@ services:
 
   # Jellyseerr - Media Request Management
   jellyseerr:
-    <<: *common-keys-media
+    <<: *common-keys-apps
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     volumes:
@@ -377,8 +372,8 @@ services:
 
   # Bazarr - Subtitle Management
   bazarr:
-    <<: *common-keys-media
-    image: lscr.io/linuxserver/bazarr:development
+    <<: *common-keys-apps
+    image: ghcr.io/linuxserver/bazarr:development
     container_name: bazarr
     volumes:
       - $APPDATA_DIR/bazarr:/config
