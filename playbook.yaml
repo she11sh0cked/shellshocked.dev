@@ -157,6 +157,14 @@
         state: file
         mode: 0600
 
+    - name: Fill appdata/notifiarr/notifiarr.conf file
+      ansible.builtin.template:
+        src: files/appdata/notifiarr/notifiarr.conf
+        dest: "{{ appdata_dir }}/notifiarr/notifiarr.conf"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: 0644
+
     - name: Create docker containers
       community.docker.docker_compose:
         project_src: "{{ user_dir }}"

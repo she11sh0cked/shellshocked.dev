@@ -461,6 +461,26 @@ services:
 
   ############################# MAINTENANCE
 
+  # Notifiarr - Notification Management
+  notifiarr:
+    <<: *common-keys-apps
+    image: golift/notifiarr:latest
+    container_name: notifiarr
+    volumes:
+      - $APPDATA_DIR/notifiarr:/config
+      - /var/run/utmp:/var/run/utmp
+      - /etc/machine-id:/etc/machine-id
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.notifiarr-rtr.entrypoints=https"
+      - "traefik.http.routers.notifiarr-rtr.rule=Host(`notifiarr.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.notifiarr-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.notifiarr-rtr.service=notifiarr-svc"
+      - "traefik.http.services.notifiarr-svc.loadbalancer.server.port=5454"
+
   # Watchtower - Automatic Docker Container Updates
   watchtower:
     <<: *common-keys-apps

@@ -45,5 +45,15 @@ services:
   radarr:
     api_key:
 
+  prowlarr:
+    api_key:
+
+  notifiarr:
+    api_key:
+
   watchtower:
     notification_url:
+
+  unpackerr:
+    notification_url:
+
