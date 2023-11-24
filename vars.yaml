@@ -60,3 +60,6 @@ services:
   lastfm_playlists:
     spotify_client_id:
     spotify_client_secret:
+
+  core_keeper:
+    game_id:
