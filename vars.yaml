@@ -57,3 +57,6 @@ services:
   unpackerr:
     notification_url:
 
+  lastfm_playlists:
+    spotify_client_id:
+    spotify_client_secret:

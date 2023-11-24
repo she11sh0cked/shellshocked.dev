@@ -457,6 +457,24 @@ services:
       - "traefik.http.routers.neko-rtr.service=neko-svc"
       - "traefik.http.services.neko-svc.loadbalancer.server.port=8080"
 
+  # lastfm-playlists - Last.fm Playlist Generator for Spotify
+  lastfm-playlists:
+    <<: *common-keys-apps
+    image: ghcr.io/she11sh0cked/lastfm-playlists:main
+    container_name: lastfm-playlists
+    environment:
+      <<: *default-tz-puid-pgid
+      LASTFM_USERNAMES: "she11sh0cked"
+      LASTFM_PLAYLISTS: "library,mix,recommended"
+      AMOUNT: 100
+      CRON: "0 1 * * *"
+      IMMEDIATE: "true"
+      SPOTIFY_CLIENT_ID: $SPOTIFY_CLIENT_ID
+      SPOTIFY_CLIENT_SECRET: $SPOTIFY_CLIENT_SECRET
+      SPOTIFY_REDIRECT_URI: "http://$DOMAIN:3000/callback"
+    volumes:
+      - $APPDATA_DIR/lastfm-playlists/token.json:/app/token.json
+
   ############################# MAINTENANCE
 
   # Notifiarr - Notification Management
