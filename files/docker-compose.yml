@@ -488,21 +488,8 @@ services:
     container_name: watchtower
     environment:
       <<: *default-tz-puid-pgid
-      WATCHTOWER_NOTIFICATIONS: shoutrrr
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_NOTIFICATION_REPORT: "true"
       WATCHTOWER_NOTIFICATION_URL: $WATCHTOWER_NOTIFICATION_URL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
-  # Docker-GC - Automatic Docker Garbage Collection
-  dockergc:
-    <<: *common-keys-apps
-    image: clockworksoul/docker-gc-cron:latest
-    container_name: docker-gc
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      <<: *default-tz-puid-pgid
-      CRON: 0 0 0 * * # Every day at midnight
-      FORCE_IMAGE_REMOVAL: 1
-      GRACE_PERIOD_SECONDS: 604800 # 7 days
-      CLEAN_UP_VOLUMES: 1
