@@ -183,3 +183,15 @@
         path: "{{ appdata_dir }}/prowlarr/config.xml"
         regexp: '^(\s*<AuthenticationMethod>).*(</AuthenticationMethod>)$'
         replace: '\1External\2'
+
+    - name: Fix AuthenticationMethod in sonarr's config.xml
+      ansible.builtin.replace:
+        path: "{{ appdata_dir }}/sonarr/config.xml"
+        regexp: '^(\s*<AuthenticationMethod>).*(</AuthenticationMethod>)$'
+        replace: '\1External\2'
+
+    - name: Fix AuthenticationMethod in radarr's config.xml
+      ansible.builtin.replace:
+        path: "{{ appdata_dir }}/radarr/config.xml"
+        regexp: '^(\s*<AuthenticationMethod>).*(</AuthenticationMethod>)$'
+        replace: '\1External\2'
