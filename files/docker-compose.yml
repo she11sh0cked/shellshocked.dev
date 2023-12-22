@@ -324,7 +324,7 @@ services:
       - "traefik.enable=true"
       ## HTTP Routers
       - "traefik.http.routers.jellyfin-rtr.entrypoints=https"
-      - "traefik.http.routers.jellyfin-rtr.rule=Host(`jellyfin.$DOMAIN`)"
+      - "traefik.http.routers.jellyfin-rtr.rule=Host(`jellyfin.$DOMAIN`,`jf.$DOMAIN`)"
       ## Middlewares
       - "traefik.http.routers.jellyfin-rtr.middlewares=public@file"
       ## HTTP Services
@@ -346,7 +346,7 @@ services:
       - "traefik.enable=true"
       ## HTTP Routers
       - "traefik.http.routers.jfa-go-rtr.entrypoints=https"
-      - "traefik.http.routers.jfa-go-rtr.rule=Host(`jfa.$DOMAIN`)"
+      - "traefik.http.routers.jfa-go-rtr.rule=Host(`jellyfin-accounts.$DOMAIN`,`jfa.$DOMAIN`)"
       ## Middlewares
       - "traefik.http.routers.jfa-go-rtr.middlewares=public@file"
       ## HTTP Services
