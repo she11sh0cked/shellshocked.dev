@@ -314,7 +314,7 @@ services:
   # Jellyfin - Media Server
   jellyfin:
     <<: *common-keys-apps
-    image: ghcr.io/confusedpolarbear/jellyfin-intro-skipper:latest
+    image: ghcr.io/endrl/jellyfin:latest
     container_name: jellyfin
     volumes:
       - /dev/shm:/data/transcode
