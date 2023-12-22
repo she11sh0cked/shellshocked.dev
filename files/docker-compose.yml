@@ -331,6 +331,45 @@ services:
       - "traefik.http.routers.jellyfin-rtr.service=jellyfin-svc"
       - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
 
+  # Jellyfin Vue - Alternative Jellyfin WebUI
+  jellyfin-vue:
+    <<: *common-keys-apps
+    image: ghcr.io/endrl/jellyfin-vue:latest
+    container_name: jellyfin-vue
+    depends_on:
+      - jellyfin
+    environment:
+      <<: *default-tz-puid-pgid
+      DEFAULT_SERVERS: https://jf.$DOMAIN
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.jellyfin-vue-rtr.entrypoints=https"
+      - "traefik.http.routers.jellyfin-vue-rtr.rule=Host(`jellyfin-vue.$DOMAIN`,`jfv.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.jellyfin-vue-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.jellyfin-vue-rtr.service=jellyfin-vue-svc"
+      - "traefik.http.services.jellyfin-vue-svc.loadbalancer.server.port=80"
+
+  # Jellyfin Segment Editor - Segment Editor for Jellyfin
+  jellyfin-segment-editor:
+    <<: *common-keys-apps
+    image: ghcr.io/endrl/jellyfin-se:latest
+    container_name: jellyfin-segment-editor
+    depends_on:
+      - jellyfin
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.jellyfin-segment-editor-rtr.entrypoints=https"
+      - "traefik.http.routers.jellyfin-segment-editor-rtr.rule=Host(`jellyfin-segment-editor.$DOMAIN`,`jfse.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.jellyfin-segment-editor-rtr.middlewares=protected@file"
+      ## HTTP Services
+      - "traefik.http.routers.jellyfin-segment-editor-rtr.service=jellyfin-segment-editor-svc"
+      - "traefik.http.services.jellyfin-segment-editor-svc.loadbalancer.server.port=80"
+
   # Jellyfin Accounts - Jellyfin Account Management
   jellyfin-accounts:
     <<: *common-keys-apps
