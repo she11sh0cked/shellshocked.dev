@@ -12,10 +12,16 @@ http:
 
     middlewares-secure-headers:
       headers:
+        accessControlAllowCredentials: true
+        accessControlAllowHeaders:
+          - "Authorization"
+          - "Content-Type"
         accessControlAllowMethods:
-          - GET
-          - OPTIONS
-          - PUT
+          - "GET"
+          - "HEAD"
+          - "OPTIONS"
+          - "PUT"
+        accessControlAllowOriginList: "*"
         accessControlMaxAge: 100
         hostsProxyHeaders:
           - "X-Forwarded-Host"
