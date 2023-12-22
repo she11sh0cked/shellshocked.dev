@@ -332,10 +332,10 @@ services:
       - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
 
   # Jellyfin Accounts - Jellyfin Account Management
-  jfa-go:
+  jellyfin-accounts:
     <<: *common-keys-apps
     image: hrfee/jfa-go:latest
-    container_name: jfa-go
+    container_name: jellyfin-accounts
     depends_on:
       - jellyfin
     volumes:
@@ -358,6 +358,8 @@ services:
     <<: *common-keys-apps
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
+    depends_on:
+      - jellyfin
     volumes:
       - $APPDATA_DIR/jellyseerr:/app/config
     labels:
