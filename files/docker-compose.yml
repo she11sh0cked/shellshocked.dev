@@ -512,9 +512,19 @@ services:
       IMMEDIATE: "true"
       SPOTIFY_CLIENT_ID: $SPOTIFY_CLIENT_ID
       SPOTIFY_CLIENT_SECRET: $SPOTIFY_CLIENT_SECRET
-      SPOTIFY_REDIRECT_URI: "http://$DOMAIN:3000/callback"
+      SPOTIFY_REDIRECT_URI: "https://lastfm-playlists.$DOMAIN/callback"
     volumes:
-      - $APPDATA_DIR/lastfm-playlists/token.json:/app/token.json
+      - $APPDATA_DIR/lastfm-playlists:/config
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.lastfm-playlists-rtr.entrypoints=https"
+      - "traefik.http.routers.lastfm-playlists-rtr.rule=Host(`lastfm-playlists.$DOMAIN`)"
+      ## Middlewares
+      - "traefik.http.routers.lastfm-playlists-rtr.middlewares=public@file"
+      ## HTTP Services
+      - "traefik.http.routers.lastfm-playlists-rtr.service=lastfm-playlists-svc"
+      - "traefik.http.services.lastfm-playlists-svc.loadbalancer.server.port=3000"
 
   ############################# GAMES
 
