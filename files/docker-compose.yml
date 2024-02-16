@@ -14,6 +14,8 @@ networks:
 secrets:
   traefik_forward_auth:
     file: $SECRETS_DIR/traefik_forward_auth
+  wg_private_key:
+    file: $SECRETS_DIR/wg_private_key
 
 ########################### EXTENSION FIELDS
 
@@ -174,46 +176,77 @@ services:
       - "traefik.http.routers.heimdall-rtr.service=heimdall-svc"
       - "traefik.http.services.heimdall-svc.loadbalancer.server.port=80"
 
+  # Gluetun - VPN Client for Docker Containers and More
+  gluetun:
+    <<: *common-keys-core
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    entrypoint: [
+        "/bin/sh",
+        "-c",
+        # Load the WireGuard private key from a Docker secret
+        "export WIREGUARD_PRIVATE_KEY=$(cat /run/secrets/wg_private_key) ; /gluetun-entrypoint",
+      ]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - reverse_proxy
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    volumes:
+      - $APPDATA_DIR/gluetun:/gluetun
+    environment:
+      TZ: $TZ
+      VPN_SERVICE_PROVIDER: mullvad
+      VPN_TYPE: wireguard
+      WIREGUARD_ADDRESSES: 10.69.185.186/32
+      SERVER_COUNTRIES: France
+      SERVER_CITIES: Paris,Marseille
+    secrets:
+      - wg_private_key
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.gluetun-qbittorrent-rtr.entrypoints=https"
+      - "traefik.http.routers.gluetun-qbittorrent-rtr.rule=Host(`qbit.$DOMAIN`)"
+      # Middlewares
+      - "traefik.http.routers.gluetun-qbittorrent-rtr.middlewares=protected@file"
+      # HTTP Services
+      - "traefik.http.routers.gluetun-qbittorrent-rtr.service=gluetun-svc"
+      - "traefik.http.services.gluetun-svc.loadbalancer.server.port=8080"
+
   ############################# DOWNLOADERS
 
   # qBittorrent - Torrent downloader
+  # Traefik labels via gluetun
   qbittorrent:
     <<: *common-keys-apps
     image: ghcr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
+    networks: []
+    network_mode: "service:gluetun"
     volumes:
       - $APPDATA_DIR/qbittorrent:/config
       - $DOWNLOADS_DIR:/data/downloads
     environment:
       <<: *default-tz-puid-pgid
-      UMASK: 002
-    ports:
-      - 6881:6881
-    labels:
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.qbittorrent-rtr.entrypoints=https"
-      - "traefik.http.routers.qbittorrent-rtr.rule=Host(`qbit.$DOMAIN`)"
-      ## Middlewares
-      - "traefik.http.routers.qbittorrent-rtr.middlewares=protected@file"
-      ## HTTP Services
-      - "traefik.http.routers.qbittorrent-rtr.service=qbittorrent-svc"
-      - "traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080"
+      UMASK_SET: 002
 
   # Flood - A modern web UI for various torrent clients
   flood:
     <<: *common-keys-apps
     image: jesec/flood:master
     container_name: flood
-    depends_on:
-      - qbittorrent
     volumes:
       - $APPDATA_DIR/flood:/config
       - $DOWNLOADS_DIR:/data/downloads
     environment:
       <<: *default-tz-puid-pgid
       FLOOD_OPTION_AUTH: none
-      FLOOD_OPTION_QBURL: http://qbittorrent:8080
+      FLOOD_OPTION_QBURL: http://gluetun:8080
       FLOOD_OPTION_QBUSER: admin
       FLOOD_OPTION_QBPASS: adminadmin
     labels:
