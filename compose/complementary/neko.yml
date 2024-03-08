@@ -1,0 +1,52 @@
+services:
+  # Neko - Browser in a browser
+  neko:
+    image: m1k1o/neko:firefox
+    container_name: neko
+    entrypoint:
+      [
+        "/scripts/secrets_loader.sh",
+        "/usr/bin/supervisord",
+        "-c",
+        "/etc/neko/supervisord.conf",
+      ]
+    security_opt:
+      - no-new-privileges:true
+    shm_size: "2gb"
+    restart: unless-stopped
+    profiles: ["apps", "complementary", "all"]
+    networks:
+      - t2_proxy
+    ports:
+      - "52000-52100:52000-52100/udp"
+    volumes:
+      - $DOCKERDIR/scripts:/scripts:ro
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      NEKO_EPR: 52000-52100
+      NEKO_SCREEN: 1920x1080@30
+      NEKO_PASSWORD_ADMIN_FILE: /run/secrets/neko_admin_password
+      NEKO_PASSWORD_FILE: /run/secrets/neko_password
+      NEKO_ICELITE: true
+    secrets:
+      - neko_admin_password
+      - neko_password
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.neko-rtr.entrypoints=websecure"
+      - "traefik.http.routers.neko-rtr.rule=Host(`neko.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.neko-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.neko-rtr.service=neko-svc"
+      - "traefik.http.services.neko-svc.loadbalancer.server.port=8080"
+      ### Homepage
+      - "homepage.group=Complementary"
+      - "homepage.name=Neko"
+      - "homepage.icon=neko.png"
+      - "homepage.href=https://neko.$DOMAINNAME"
+      - "homepage.description=Browser in a browser"

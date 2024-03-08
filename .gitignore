@@ -1,2 +1,6 @@
-*.retry
-*.secret.*
+__*
+appdata/
+data/
+logs/
+secrets/
+.env

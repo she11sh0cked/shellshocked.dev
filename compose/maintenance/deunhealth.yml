@@ -1,0 +1,24 @@
+services:
+  # DeUnhealth - Restart your unhealthy containers safely
+  deunhealth:
+    image: qmcgaw/deunhealth
+    container_name: deunhealth
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "maintenance", "all"]
+    networks:
+      - socket_proxy
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      LOG_LEVEL: info
+      HEALTH_SERVER_ADDRESS: 127.0.0.1:9999
+      DOCKER_HOST: tcp://socket-proxy:2375
+    labels:
+      ### Homepage
+      - "homepage.group=Maintenance"
+      - "homepage.name=DeUnhealth"
+      - "homepage.icon=mdi-restart"
+      - "homepage.description=Restart your unhealthy containers safely"

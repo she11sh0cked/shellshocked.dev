@@ -1,0 +1,47 @@
+services:
+  # Homepage - Application Dashboard
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "frontend", "all"]
+    networks:
+      - t2_proxy
+      - socket_proxy
+    volumes:
+      - $DOCKERDIR/appdata/homepage:/app/config
+      - $DOCKERDIR/logs/homepage:/app/config/logs
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      HOMEPAGE_FILE_BAZARR_KEY: /run/secrets/bazarr_key
+      HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/jellyfin_key
+      HOMEPAGE_FILE_JELLYSEERR_KEY: /run/secrets/jellyseerr_key
+      HOMEPAGE_FILE_PORTAINER_KEY: /run/secrets/portainer_key
+      HOMEPAGE_FILE_PROWLARR_KEY: /run/secrets/prowlarr_key
+      HOMEPAGE_FILE_RADARR_KEY: /run/secrets/radarr_key
+      HOMEPAGE_FILE_SONARR_KEY: /run/secrets/sonarr_key
+      HOMEPAGE_FILE_WATCHTOWER_KEY: /run/secrets/watchtower_key
+    secrets:
+      - bazarr_key
+      - jellyfin_key
+      - jellyseerr_key
+      - portainer_key
+      - prowlarr_key
+      - radarr_key
+      - sonarr_key
+      - watchtower_key
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.homepage-rtr.entrypoints=websecure"
+      - "traefik.http.routers.homepage-rtr.rule=Host(`$DOMAINNAME`,`www.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.homepage-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.homepage-rtr.service=homepage-svc"
+      - "traefik.http.services.homepage-svc.loadbalancer.server.port=3000"

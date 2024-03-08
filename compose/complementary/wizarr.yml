@@ -1,0 +1,34 @@
+services:
+  # Wizarr - User Invites and Management
+  wizarr:
+    image: ghcr.io/wizarrrr/wizarr:latest
+    container_name: wizarr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "complementary", "all"]
+    networks:
+      - t2_proxy
+    volumes:
+      - $DOCKERDIR/appdata/wizarr:/data/database
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.wizarr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.wizarr-rtr.rule=Host(`wizarr.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.wizarr-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.wizarr-rtr.service=wizarr-svc"
+      - "traefik.http.services.wizarr-svc.loadbalancer.server.port=5690"
+      ### Homepage
+      - "homepage.group=Complementary"
+      - "homepage.name=Wizarr"
+      - "homepage.icon=wizarr.png"
+      - "homepage.href=https://wizarr.$DOMAINNAME"
+      - "homepage.description=User Invites and Management"

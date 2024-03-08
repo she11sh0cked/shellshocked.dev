@@ -1,0 +1,40 @@
+services:
+  # Portainer - WebUI for Containers
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "admin", "all"]
+    networks:
+      - t2_proxy
+      - socket_proxy
+    command: -H tcp://socket-proxy:2375
+    volumes:
+      - $DOCKERDIR/appdata/portainer/data:/data
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.portainer-rtr.entrypoints=websecure"
+      - "traefik.http.routers.portainer-rtr.rule=Host(`portainer.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.portainer-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.portainer-rtr.service=portainer-svc"
+      - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
+      ### Homepage
+      - "homepage.group=Admin"
+      - "homepage.name=Portainer"
+      - "homepage.icon=portainer.png"
+      - "homepage.href=https://portainer.$DOMAINNAME"
+      - "homepage.description=WebUI for Containers"
+      - "homepage.widget.type=portainer"
+      - "homepage.widget.url=http://portainer:9000"
+      - "homepage.widget.env=1"
+      - "homepage.widget.key={{HOMEPAGE_FILE_PORTAINER_KEY}}"

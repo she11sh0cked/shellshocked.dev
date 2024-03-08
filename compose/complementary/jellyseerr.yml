@@ -1,0 +1,37 @@
+services:
+  # Jellyseerr - Request Managment
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "complementary", "all"]
+    networks:
+      - t2_proxy
+    volumes:
+      - $DOCKERDIR/appdata/jellyseerr:/app/config
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.jellyseerr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.jellyseerr-rtr.rule=Host(`jellyseerr.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.jellyseerr-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.jellyseerr-rtr.service=jellyseerr-svc"
+      - "traefik.http.services.jellyseerr-svc.loadbalancer.server.port=5055"
+      ### Homepage
+      - "homepage.group=Complementary"
+      - "homepage.name=Jellyseerr"
+      - "homepage.icon=jellyseerr.png"
+      - "homepage.href=https://jellyseerr.$DOMAINNAME"
+      - "homepage.description=Request Managment"
+      - "homepage.widget.type=jellyseerr"
+      - "homepage.widget.url=http://jellyseerr:5055"
+      - "homepage.widget.key={{HOMEPAGE_FILE_JELLYSEERR_KEY}}"

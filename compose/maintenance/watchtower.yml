@@ -1,0 +1,32 @@
+services:
+  # Watchtower - Automatic Docker Container Updates
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "maintenance", "all"]
+    networks:
+      - socket_proxy
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      WATCHTOWER_CLEANUP: true
+      WATCHTOWER_INCLUDE_RESTARTING: true
+      WATCHTOWER_SCHEDULE: "0 0 0 * * ?" # Everyday at midnight.
+      WATCHTOWER_HTTP_API_METRICS: true
+      WATCHTOWER_HTTP_API_TOKEN: /run/secrets/watchtower_key
+      DOCKER_HOST: tcp://socket-proxy:2375
+    secrets:
+      - watchtower_key
+    labels:
+      ### Homepage
+      - "homepage.group=Maintenance"
+      - "homepage.name=Watchtower"
+      - "homepage.icon=watchtower.png"
+      - "homepage.description=Automatic Docker Container Updates"
+      - "homepage.widget.type=watchtower"
+      - "homepage.widget.url=http://watchtower:8080"
+      - "homepage.widget.key={{HOMEPAGE_FILE_WATCHTOWER_KEY}}"

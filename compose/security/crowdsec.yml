@@ -1,0 +1,45 @@
+services:
+  # CrowdSec - Open-source & collaborative security IPS
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    entrypoint: ["/scripts/secrets_loader.sh", "/docker_start.sh"]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["security", "all"]
+    volumes:
+      - /var/log:/var/log:ro
+      - $DOCKERDIR/scripts:/scripts:ro
+      - $DOCKERDIR/logs:/logs:ro
+      - $DOCKERDIR/appdata/crowdsec/acquis.d:/etc/crowdsec/acquis.d:ro
+      - $DOCKERDIR/appdata/crowdsec/notifications:/etc/crowdsec/notifications:ro
+      - $DOCKERDIR/appdata/crowdsec/profiles.yaml:/etc/crowdsec/profiles.yaml:ro
+      - $DOCKERDIR/appdata/crowdsec/data:/var/lib/crowdsec/data
+      - $DOCKERDIR/appdata/crowdsec/config:/etc/crowdsec
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      COLLECTIONS: crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/linux crowdsecurity/sshd
+      CUSTOM_HOSTNAME: $DOMAINNAME
+      CROWDSEC_DISCORD_WEBHOOK_FILE: /run/secrets/crowdsec_discord_webhook
+    secrets:
+      - crowdsec_discord_webhook
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.crowdsec-rtr.entrypoints=websecure"
+      - "traefik.http.routers.crowdsec-rtr.rule=Host(`crowdsec.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.crowdsec-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.crowdsec-rtr.service=crowdsec-svc"
+      - "traefik.http.services.crowdsec-svc.loadbalancer.server.port=8080"
+      ### Homepage
+      - "homepage.group=Security"
+      - "homepage.name=CrowdSec"
+      - "homepage.icon=crowdsec.png"
+      - "homepage.href=https://app.crowdsec.net/alerts"
+      - "homepage.description=Open-source & collaborative security IPS"

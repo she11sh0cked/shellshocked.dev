@@ -1,0 +1,92 @@
+version: "3.9"
+
+########################### NETWORKS
+networks:
+  default:
+    driver: bridge
+  socket_proxy:
+    name: socket_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.91.0/24
+  t2_proxy:
+    name: t2_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.90.0/24
+
+########################### SECRETS
+secrets:
+  ### CORE
+  cloudflare_traefik_key:
+    file: $DOCKERDIR/secrets/cloudflare_traefik_key
+  traefik_forward_auth:
+    file: $DOCKERDIR/secrets/traefik_forward_auth
+  wireguard_preshared_key:
+    file: $DOCKERDIR/secrets/wireguard_preshared_key
+  wireguard_private_key:
+    file: $DOCKERDIR/secrets/wireguard_private_key
+  ### ADMIN
+  portainer_key:
+    file: $DOCKERDIR/secrets/portainer_key
+  ### MEDIA
+  jellyfin_key:
+    file: $DOCKERDIR/secrets/jellyfin_key
+  sonarr_key:
+    file: $DOCKERDIR/secrets/sonarr_key
+  radarr_key:
+    file: $DOCKERDIR/secrets/radarr_key
+  ### COMPLEMENTARY APPS
+  bazarr_key:
+    file: $DOCKERDIR/secrets/bazarr_key
+  jellyseerr_key:
+    file: $DOCKERDIR/secrets/jellyseerr_key
+  notifiarr_key:
+    file: $DOCKERDIR/secrets/notifiarr_key
+  prowlarr_key:
+    file: $DOCKERDIR/secrets/prowlarr_key
+  neko_password:
+    file: $DOCKERDIR/secrets/neko_password
+  neko_admin_password:
+    file: $DOCKERDIR/secrets/neko_admin_password
+  ### MAINTENANCE
+  watchtower_key:
+    file: $DOCKERDIR/secrets/watchtower_key
+  ### SECURITY
+  crowdsec_discord_webhook:
+    file: $DOCKERDIR/secrets/crowdsec_discord_webhook
+
+########################### SERVICES
+include:
+  ### CORE
+  - compose/core/traefik.yml
+  - compose/core/socket-proxy.yml
+  - compose/core/oauth.yml
+  - compose/core/gluetun.yml
+  ### ADMIN
+  - compose/admin/portainer.yml
+  - compose/admin/dozzle.yml
+  ### FRONTEND
+  - compose/frontend/homepage.yml
+  ### MEDIA
+  - compose/media/jellyfin.yml
+  - compose/media/sonarr.yml
+  - compose/media/radarr.yml
+  ### DOWNLOADERS
+  - compose/downloaders/qbittorrent.yml
+  ### COMPLEMENTARY APPS
+  - compose/complementary/bazarr.yml
+  - compose/complementary/jellyseerr.yml
+  - compose/complementary/neko.yml
+  - compose/complementary/notifiarr.yml
+  - compose/complementary/prowlarr.yml
+  - compose/complementary/unpackerr.yml
+  - compose/complementary/wizarr.yml
+  ### MAINTENANCE
+  - compose/maintenance/docker-gc.yml
+  - compose/maintenance/deunhealth.yml
+  - compose/maintenance/watchtower.yml
+  ### SECURITY
+  - compose/security/crowdsec.yml

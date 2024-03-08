@@ -1,0 +1,8 @@
+http:
+  middlewares:
+    middlewares-oauth:
+      forwardAuth:
+        address: "http://oauth:4181"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - "X-Forwarded-User"

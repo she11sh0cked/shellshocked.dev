@@ -1,0 +1,33 @@
+services:
+  # Unpackerr - Automated Archive Extractions
+  unpackerr:
+    image: ghcr.io/hotio/unpackerr
+    container_name: unpackerr
+    entrypoint: ["/scripts/secrets_loader.sh", "/init"]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "complementary", "all"]
+    networks:
+      - t2_proxy
+    volumes:
+      - $DOCKERDIR/scripts:/scripts:ro
+      - $DOCKERDIR/data/torrents:/data/torrents
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      UN_RADARR_0_API_KEY_FILE: /run/secrets/radarr_key
+      UN_RADARR_0_URL: http://radarr:7878
+      UN_SONARR_0_API_KEY_FILE: /run/secrets/sonarr_key
+      UN_SONARR_0_URL: http://sonarr:8989
+      # UN_WEBHOOK_0_URL: $UNPACKERR_NOTIFICATION_URL
+    secrets:
+      - radarr_key
+      - sonarr_key
+    labels:
+      ### Homepage
+      - "homepage.group=Complementary"
+      - "homepage.name=Unpackerr"
+      - "homepage.icon=https://unpackerr.zip/img/icon.png"
+      - "homepage.description=Automated Archive Extractions"
