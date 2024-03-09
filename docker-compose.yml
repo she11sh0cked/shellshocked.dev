@@ -66,8 +66,9 @@ include:
   - compose/core/oauth.yml
   - compose/core/gluetun.yml
   ### ADMIN
-  - compose/admin/portainer.yml
+  - compose/admin/dockge.yml
   - compose/admin/dozzle.yml
+  - compose/admin/portainer.yml
   ### FRONTEND
   - compose/frontend/homepage.yml
   ### MEDIA
