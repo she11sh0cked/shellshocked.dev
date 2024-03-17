@@ -1,6 +1,6 @@
 __*
-appdata/
-data/
-logs/
-secrets/
-.env
+/appdata
+/data
+/logs
+/secrets
+/.env
