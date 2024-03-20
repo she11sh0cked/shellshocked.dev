@@ -15,8 +15,6 @@ services:
       - $DOCKERDIR/logs/homepage:/app/config/logs
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       HOMEPAGE_FILE_BAZARR_KEY: /run/secrets/bazarr_key
       HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/jellyfin_key
       HOMEPAGE_FILE_JELLYSEERR_KEY: /run/secrets/jellyseerr_key
