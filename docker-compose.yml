@@ -47,10 +47,6 @@ secrets:
     file: $DOCKERDIR/secrets/notifiarr_key
   prowlarr_key:
     file: $DOCKERDIR/secrets/prowlarr_key
-  neko_password:
-    file: $DOCKERDIR/secrets/neko_password
-  neko_admin_password:
-    file: $DOCKERDIR/secrets/neko_admin_password
   ### MAINTENANCE
   watchtower_key:
     file: $DOCKERDIR/secrets/watchtower_key

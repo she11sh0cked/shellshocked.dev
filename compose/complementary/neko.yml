@@ -3,13 +3,6 @@ services:
   neko:
     image: m1k1o/neko:firefox
     container_name: neko
-    entrypoint:
-      [
-        "/scripts/secrets_loader.sh",
-        "/usr/bin/supervisord",
-        "-c",
-        "/etc/neko/supervisord.conf",
-      ]
     security_opt:
       - no-new-privileges:true
     shm_size: "2gb"
@@ -19,20 +12,15 @@ services:
       - t2_proxy
     ports:
       - "52000-52100:52000-52100/udp"
-    volumes:
-      - $DOCKERDIR/scripts:/scripts:ro
     environment:
       TZ: $TZ
       PUID: $PUID
       PGID: $PGID
       NEKO_EPR: 52000-52100
       NEKO_SCREEN: 1920x1080@30
-      NEKO_PASSWORD_ADMIN_FILE: /run/secrets/neko_admin_password
-      NEKO_PASSWORD_FILE: /run/secrets/neko_password
+      NEKO_PASSWORD_ADMIN: $NEKO_PASSWORD_ADMIN
+      NEKO_PASSWORD: $NEKO_PASSWORD
       NEKO_ICELITE: true
-    secrets:
-      - neko_admin_password
-      - neko_password
     labels:
       ### Traefik
       - "traefik.enable=true"
