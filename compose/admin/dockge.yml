@@ -1,5 +1,6 @@
 services:
   # Dockge - Docker Compose Manager
+  #! stacks folder must be the same path on host and container
   dockge:
     image: louislam/dockge
     container_name: dockge
@@ -12,7 +13,7 @@ services:
       - socket_proxy
     volumes:
       - $DOCKERDIR/appdata/dockge/data:/app/data
-      - $DOCKERDIR/appdata/dockge/stacks:/opt/stacks
+      - $DOCKERDIR/appdata/dockge/stacks:$DOCKERDIR/appdata/dockge/stacks
     environment:
       TZ: $TZ
       PUID: $PUID
