@@ -20,6 +20,7 @@ services:
       PGID: $PGID
       DOMAINNAME: $DOMAINNAME
       DOCKER_HOST: tcp://socket-proxy:2375
+      DOCKGE_STACKS_DIR: $DOCKERDIR/appdata/dockge/stacks
     labels:
       ### Traefik
       - "traefik.enable=true"
