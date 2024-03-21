@@ -14,7 +14,11 @@ services:
       - $DOCKERDIR/appdata/dockge/data:/app/data
       - $DOCKERDIR/appdata/dockge/stacks:/opt/stacks
     environment:
-      - DOCKER_HOST=tcp://socket-proxy:2375
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      DOMAINNAME: $DOMAINNAME
+      DOCKER_HOST: tcp://socket-proxy:2375
     labels:
       ### Traefik
       - "traefik.enable=true"
