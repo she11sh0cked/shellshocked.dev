@@ -90,7 +90,6 @@ services:
       - "traefik.http.routers.traefik-rtr.service=api@internal"
       # Healthcheck/ping
       - "traefik.http.routers.ping.rule=Host(`traefik.$DOMAINNAME`) && Path(`/ping`)"
-      - "traefik.http.routers.ping.tls=true"
       - "traefik.http.routers.ping.service=ping@internal"
       # Middlewares
       #- "traefik.http.routers.traefik-rtr.middlewares=chain-no-auth@file" # For No Authentication
