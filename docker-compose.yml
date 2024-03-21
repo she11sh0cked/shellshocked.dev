@@ -31,6 +31,10 @@ secrets:
   ### ADMIN
   portainer_key:
     file: $DOCKERDIR/secrets/portainer_key
+  proxmox_username:
+    file: $DOCKERDIR/secrets/proxmox_username
+  proxmox_password:
+    file: $DOCKERDIR/secrets/proxmox_password
   ### MEDIA
   jellyfin_key:
     file: $DOCKERDIR/secrets/jellyfin_key

@@ -20,15 +20,21 @@ services:
       HOMEPAGE_FILE_JELLYSEERR_KEY: /run/secrets/jellyseerr_key
       HOMEPAGE_FILE_PORTAINER_KEY: /run/secrets/portainer_key
       HOMEPAGE_FILE_PROWLARR_KEY: /run/secrets/prowlarr_key
+      HOMEPAGE_FILE_PROXMOX_PASSWORD: /run/secrets/proxmox_password
+      HOMEPAGE_FILE_PROXMOX_USERNAME: /run/secrets/proxmox_username
       HOMEPAGE_FILE_RADARR_KEY: /run/secrets/radarr_key
       HOMEPAGE_FILE_SONARR_KEY: /run/secrets/sonarr_key
       HOMEPAGE_FILE_WATCHTOWER_KEY: /run/secrets/watchtower_key
+      HOMEPAGE_VAR_DOMAINNAME: $DOMAINNAME
+      HOMEPAGE_VAR_PROXMOX_URL: $PROXMOX_URL
     secrets:
       - bazarr_key
       - jellyfin_key
       - jellyseerr_key
       - portainer_key
       - prowlarr_key
+      - proxmox_password
+      - proxmox_username
       - radarr_key
       - sonarr_key
       - watchtower_key

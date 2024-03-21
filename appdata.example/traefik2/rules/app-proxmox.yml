@@ -1,0 +1,18 @@
+http:
+  routers:
+    proxmox-rtr:
+      rule: 'Host(`pve.{{env "DOMAINNAME"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: proxmox-svc
+  services:
+    proxmox-svc:
+      loadBalancer:
+        serversTransport: "pve"
+        servers:
+          - url: '{{env "PROXMOX_URL"}}'
+  serversTransports:
+    pve:
+      insecureSkipVerify: true

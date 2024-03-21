@@ -1,3 +1,14 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
+
+- Admin:
+    - Proxmox:
+        icon: proxmox.png
+        href: "https://pve.{{HOMEPAGE_VAR_DOMAINNAME}}"
+        description: Proxmox Virtual Environment
+        widget:
+          type: proxmox
+          url: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
+          username: "{{HOMEPAGE_FILE_PROXMOX_USERNAME}}"
+          password: "{{HOMEPAGE_FILE_PROXMOX_PASSWORD}}"
