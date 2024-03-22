@@ -18,8 +18,10 @@ services:
       PUID: $PUID
       PGID: $PGID
       UN_RADARR_0_API_KEY_FILE: /run/secrets/radarr_key
+      UN_RADARR_0_PATHS_0: /data/torrents
       UN_RADARR_0_URL: http://radarr:7878
       UN_SONARR_0_API_KEY_FILE: /run/secrets/sonarr_key
+      UN_SONARR_0_PATHS_0: /data/torrents
       UN_SONARR_0_URL: http://sonarr:8989
       # UN_WEBHOOK_0_URL: $UNPACKERR_NOTIFICATION_URL
     secrets:
