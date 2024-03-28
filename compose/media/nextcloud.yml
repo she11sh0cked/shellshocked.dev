@@ -1,0 +1,67 @@
+services:
+  # Nextcloud - File Hosting Service
+  nextcloud:
+    container_name: nextcloud
+    image: nextcloud:latest
+    security_opt:
+      - no-new-privileges:true
+    links:
+      - nextcloud-db
+    restart: unless-stopped
+    networks:
+      - t2_proxy
+    volumes:
+      - $DOCKERDIR/appdata/nextcloud:/var/www/html
+      - $DOCKERDIR/data:/mnt/data
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      MYSQL_HOST: nextcloud-db
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD_FILE: /run/secrets/nextcloud_db_password
+    secrets:
+      - nextcloud_db_password
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.nextcloud-rtr.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud-rtr.rule=Host(`nextcloud.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.nextcloud-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.nextcloud-rtr.service=nextcloud-svc"
+      - "traefik.http.services.nextcloud-svc.loadbalancer.server.port=80"
+      ### Homepage
+      - "homepage.group=Media"
+      - "homepage.name=Nextcloud"
+      - "homepage.icon=nextcloud.png"
+      - "homepage.href=https://nextcloud.$DOMAINNAME"
+      - "homepage.description=File Hosting Service"
+      - "homepage.widget.type=nextcloud"
+      - "homepage.widget.url=http://nextcloud:80"
+      - "homepage.widget.key={{HOMEPAGE_FILE_NEXTCLOUD_KEY}}"
+
+  # Nextcloud Database - MariaDB
+  nextcloud-db:
+    container_name: nextcloud-db
+    image: mariadb:latest
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - t2_proxy
+    volumes:
+      - $DOCKERDIR/appdata/nextcloud-db:/var/lib/mysql
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD_FILE: /run/secrets/nextcloud_db_password
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    secrets:
+      - nextcloud_db_password

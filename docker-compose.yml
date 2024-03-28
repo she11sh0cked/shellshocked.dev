@@ -38,6 +38,10 @@ secrets:
   ### MEDIA
   jellyfin_key:
     file: $DOCKERDIR/secrets/jellyfin_key
+  nextcloud_key:
+    file: $DOCKERDIR/secrets/nextcloud_key
+  nextcloud_db_password:
+    file: $DOCKERDIR/secrets/nextcloud_db_password
   sonarr_key:
     file: $DOCKERDIR/secrets/sonarr_key
   radarr_key:
@@ -73,6 +77,7 @@ include:
   - compose/frontend/homepage.yml
   ### MEDIA
   - compose/media/jellyfin.yml
+  - compose/media/nextcloud.yml
   - compose/media/sonarr.yml
   - compose/media/radarr.yml
   ### DOWNLOADERS

@@ -18,6 +18,7 @@ services:
       HOMEPAGE_FILE_BAZARR_KEY: /run/secrets/bazarr_key
       HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/jellyfin_key
       HOMEPAGE_FILE_JELLYSEERR_KEY: /run/secrets/jellyseerr_key
+      HOMEPAGE_FILE_NEXTCLOUD_KEY: /run/secrets/nextcloud_key
       HOMEPAGE_FILE_PORTAINER_KEY: /run/secrets/portainer_key
       HOMEPAGE_FILE_PROWLARR_KEY: /run/secrets/prowlarr_key
       HOMEPAGE_FILE_PROXMOX_PASSWORD: /run/secrets/proxmox_password
@@ -31,6 +32,7 @@ services:
       - bazarr_key
       - jellyfin_key
       - jellyseerr_key
+      - nextcloud_key
       - portainer_key
       - prowlarr_key
       - proxmox_password
