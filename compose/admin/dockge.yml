@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     profiles: ["apps", "admin", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
       - socket_proxy
     volumes:
       - $DOCKERDIR/appdata/dockge/data:/app/data

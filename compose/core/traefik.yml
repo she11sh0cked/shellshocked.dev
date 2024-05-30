@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     profiles: ["core", "all"]
     networks:
-      t2_proxy:
+      reverse_proxy:
         ipv4_address: 192.168.90.254
       socket_proxy:
     command: # CLI arguments
@@ -39,7 +39,7 @@ services:
       - --providers.docker=true
       - --providers.docker.endpoint=tcp://socket-proxy:2375
       - --providers.docker.exposedByDefault=false
-      - --providers.docker.network=t2_proxy
+      - --providers.docker.network=reverse_proxy
       - --providers.docker.swarmMode=false
       - --entrypoints.websecure.http.tls=true
       - --entrypoints.websecure.http.tls.options=tls-opts@file

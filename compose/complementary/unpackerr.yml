@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     profiles: ["apps", "complementary", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
     volumes:
       - $DOCKERDIR/scripts:/scripts:ro
       - $DOCKERDIR/data/torrents:/data/torrents

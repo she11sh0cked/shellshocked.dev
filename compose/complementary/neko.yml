@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     profiles: ["apps", "complementary", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
     ports:
       - "52000-52100:52000-52100/udp"
     environment:

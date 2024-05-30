@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     profiles: ["core", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
     cap_add:
       - NET_ADMIN
     devices:

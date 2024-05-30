@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     profiles: ["core", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
     environment:
       TZ: $TZ
       PUID: $PUID

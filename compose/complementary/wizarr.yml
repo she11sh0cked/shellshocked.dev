@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     profiles: ["apps", "complementary", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
     volumes:
       - $DOCKERDIR/appdata/wizarr:/data/database
     environment:

@@ -9,7 +9,7 @@ services:
       - nextcloud-db
     restart: unless-stopped
     networks:
-      - t2_proxy
+      - reverse_proxy
     volumes:
       - $DOCKERDIR/appdata/nextcloud:/var/www/html
       - $DOCKERDIR/data:/mnt/data
@@ -52,7 +52,7 @@ services:
       - no-new-privileges:true
     restart: unless-stopped
     networks:
-      - t2_proxy
+      - reverse_proxy
     volumes:
       - $DOCKERDIR/appdata/nextcloud-db:/var/lib/mysql
     environment:

@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     profiles: ["apps", "media", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
     devices:
       - /dev/dri:/dev/dri # for harware transcoding
     volumes:

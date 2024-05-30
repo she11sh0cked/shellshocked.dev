@@ -10,8 +10,8 @@ networks:
     ipam:
       config:
         - subnet: 192.168.91.0/24
-  t2_proxy:
-    name: t2_proxy
+  reverse_proxy:
+    name: reverse_proxy
     driver: bridge
     ipam:
       config:

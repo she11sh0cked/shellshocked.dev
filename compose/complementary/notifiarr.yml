@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     profiles: ["apps", "complementary", "all"]
     networks:
-      - t2_proxy
+      - reverse_proxy
     volumes:
       - /var/run/utmp:/var/run/utmp
       - /etc/machine-id:/etc/machine-id
