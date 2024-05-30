@@ -1,7 +1,7 @@
 services:
   # Jellyseerr - Request Managment
   jellyseerr:
-    image: fallenbagel/jellyseerr:latest
+    image: fallenbagel/jellyseerr:develop
     container_name: jellyseerr
     security_opt:
       - no-new-privileges:true
