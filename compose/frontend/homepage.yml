@@ -12,7 +12,9 @@ services:
       - socket_proxy
     volumes:
       - $DOCKERDIR/appdata/homepage:/app/config
+      - $DOCKERDIR/appdata/homepage/background.jpg:/app/public/background.jpg
       - $DOCKERDIR/logs/homepage:/app/config/logs
+      - /:/mnt/root:ro
     environment:
       TZ: $TZ
       HOMEPAGE_FILE_BAZARR_KEY: /run/secrets/bazarr_key

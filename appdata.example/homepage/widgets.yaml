@@ -5,8 +5,20 @@
 - resources:
     cpu: true
     memory: true
-    disk: /
+    label: system
 
-- search:
-    provider: duckduckgo
-    target: _blank
+- resources:
+    label: /
+    disk: /mnt/root
+
+- resources:
+    label: /mnt/appdata
+    disk: /mnt/root/mnt/appdata
+
+- resources:
+    label: /mnt/docker
+    disk: /mnt/root/mnt/docker
+
+- resources:
+    label: /mnt/data
+    disk: /mnt/root/mnt/data

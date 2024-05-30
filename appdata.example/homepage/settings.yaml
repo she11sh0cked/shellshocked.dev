@@ -2,6 +2,12 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/settings
 
-providers:
-  openweathermap: openweathermapapikey
-  weatherapi: weatherapiapikey
+background:
+  image: /background.jpg
+  brightness: 50
+cardBlur: md
+theme: dark
+color: slate
+disableCollapse: true
+useEqualHeights: true
+headerStyle: boxed
