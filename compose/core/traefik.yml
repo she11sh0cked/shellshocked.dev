@@ -64,9 +64,9 @@ services:
         protocol: tcp
         mode: host
     volumes:
-      - $DOCKERDIR/appdata/traefik2/rules:/rules # Dynamic File Provider directory
-      - $DOCKERDIR/appdata/traefik2/acme/acme.json:/acme.json # Certs File
-      - $DOCKERDIR/logs/traefik2:/logs # Traefik logs
+      - $DOCKERDIR/appdata/traefik/rules:/rules # Dynamic File Provider directory
+      - $DOCKERDIR/appdata/traefik/acme/acme.json:/acme.json # Certs File
+      - $DOCKERDIR/logs/traefik:/logs # Traefik logs
     environment:
       TZ: $TZ
       PUID: $PUID
