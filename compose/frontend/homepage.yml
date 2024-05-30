@@ -47,7 +47,7 @@ services:
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.homepage-rtr.entrypoints=websecure"
-      - "traefik.http.routers.homepage-rtr.rule=Host(`$DOMAINNAME`,`www.$DOMAINNAME`)"
+      - "traefik.http.routers.homepage-rtr.rule=Host(`$DOMAINNAME`) || Host(`www.$DOMAINNAME`)"
       # Middlewares
       - "traefik.http.routers.homepage-rtr.middlewares=chain-no-auth@file"
       # HTTP Services
