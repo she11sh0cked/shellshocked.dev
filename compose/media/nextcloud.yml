@@ -11,7 +11,7 @@ services:
     networks:
       - reverse_proxy
     volumes:
-      - $DOCKERDIR/appdata/nextcloud:/var/www/html
+      - $DOCKERDIR/data/nextcloud:/var/www/html
       - $DOCKERDIR/data:/mnt/data
     environment:
       TZ: $TZ
