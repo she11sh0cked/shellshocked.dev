@@ -26,25 +26,25 @@ services:
       # Security critical
       - AUTH=0
       - SECRETS=0
-      - POST=1 # Watchtower / Komodo / Dockge lifecycle actions
+      - POST=1 # Watchtower
       # Not always needed
       - BUILD=0
       - COMMIT=0
       - CONFIGS=0
-      - CONTAINERS=1 # Traefik, portainer, Komodo, Dockge, etc.
+      - CONTAINERS=1 # Traefik, portainer, etc.
       - DISTRIBUTION=0
       - EXEC=0
-      - IMAGES=1 # Portainer / Komodo / Dockge
-      - INFO=1 # Portainer / Komodo / Dockge
-      - NETWORKS=1 # Portainer / Komodo / Dockge
+      - IMAGES=1 # Portainer
+      - INFO=1 # Portainer
+      - NETWORKS=1 # Portainer
       - NODES=0
       - PLUGINS=0
-      - SERVICES=1 # Portainer / Komodo
+      - SERVICES=1 # Portainer
       - SESSION=0
       - SWARM=0
       - SYSTEM=0
-      - TASKS=1 # Portainer / Komodo
-      - VOLUMES=1 # Portainer / Komodo / Dockge
+      - TASKS=1 # Portainer
+      - VOLUMES=1 # Portainer
     labels:
       ### Homepage
       - "homepage.group=Core"
