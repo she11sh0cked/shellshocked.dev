@@ -34,6 +34,8 @@ secrets:
   proxmox_password:
     file: $DOCKERDIR/secrets/proxmox_password
   ### MEDIA
+  immich_key:
+    file: $DOCKERDIR/secrets/immich_key
   jellyfin_key:
     file: $DOCKERDIR/secrets/jellyfin_key
   nextcloud_key:
@@ -74,6 +76,7 @@ include:
   ### FRONTEND
   - compose/frontend/homepage.yml
   ### MEDIA
+  - compose/media/immich.yml
   - compose/media/jellyfin.yml
   - compose/media/nextcloud.yml
   - compose/media/sonarr.yml

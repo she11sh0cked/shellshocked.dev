@@ -1,0 +1,71 @@
+services:
+  # Immich - Self-hosted photo and video management solution
+  immich:
+    image: ghcr.io/imagegenius/immich:latest
+    container_name: immich
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - immich-redis
+      - immich-db
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    networks:
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/immich:/config
+      - $DOCKERDIR/data/media/photos:/photos
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      REDIS_HOSTNAME: immich-redis
+      DB_HOSTNAME: immich-db
+      DB_USERNAME: immich
+      DB_PASSWORD: immich
+      DB_DATABASE_NAME: immich
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.immich-rtr.entrypoints=websecure"
+      - "traefik.http.routers.immich-rtr.rule=Host(`photos.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.immich-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.immich-rtr.service=immich-svc"
+      - "traefik.http.services.immich-svc.loadbalancer.server.port=8080"
+      ### Homepage
+      - "homepage.group=Media"
+      - "homepage.name=Immich"
+      - "homepage.icon=immich.png"
+      - "homepage.href=https://photos.$DOMAINNAME"
+      - "homepage.description=Self-hosted photo and video management solution"
+      - "homepage.widget.type=immich"
+      - "homepage.widget.url=http://immich:8080"
+      - "homepage.widget.key={{HOMEPAGE_FILE_IMMICH_KEY}}"
+      - "homepage.widget.version=2"
+
+  immich-redis:
+    image: docker.io/valkey/valkey:8-bookworm
+    container_name: immich-redis
+    restart: unless-stopped
+    networks:
+      - reverse_proxy
+
+  immich-db:
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
+    container_name: immich-db
+    restart: unless-stopped
+    networks:
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/immich-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: immich
+      POSTGRES_PASSWORD: immich
+      POSTGRES_DB: immich
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+      DB_STORAGE_TYPE: 'HDD'
+    shm_size: 128mb
+
