@@ -93,6 +93,7 @@ include:
   - compose/media/navidrome.yml
   ### DOWNLOADERS
   - compose/downloaders/qbittorrent.yml
+  - compose/downloaders/slskd.yml
   ### COMPLEMENTARY APPS
   - compose/complementary/bazarr.yml
   - compose/complementary/jellyseerr.yml

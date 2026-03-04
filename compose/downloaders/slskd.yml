@@ -1,0 +1,45 @@
+services:
+  # slskd - Soulseek client
+  slskd:
+    image: slskd/slskd:latest
+    container_name: slskd
+    user: "$PUID:$PGID"
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "downloaders", "all"]
+    networks:
+      - reverse_proxy
+    ports:
+      - "50300:50300" # Soulseek listen port
+    volumes:
+      - $DOCKERDIR/appdata/slskd:/app
+      - $DOCKERDIR/data/downloads/soulseek:/data/downloads/soulseek
+      - $DOCKERDIR/data/media/music:/data/media/music
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      SLSKD_REMOTE_CONFIGURATION: "true"
+      SLSKD_INCOMPLETE_DIR: "/data/downloads/soulseek/incomplete"
+      SLSKD_DOWNLOADS_DIR: "/data/downloads/soulseek/complete"
+      SLSKD_SHARED_DIR: "/data/media/music"
+      SLSKD_UMASK: "022"
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.slskd-rtr.entrypoints=websecure"
+      - "traefik.http.routers.slskd-rtr.rule=Host(`slskd.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.slskd-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.slskd-rtr.service=slskd-svc"
+      - "traefik.http.services.slskd-svc.loadbalancer.server.port=5030"
+      ### Homepage
+      - "homepage.group=Downloaders"
+      - "homepage.name=slskd"
+      - "homepage.icon=slskd.png"
+      - "homepage.href=https://slskd.$DOMAINNAME"
+      - "homepage.description=Soulseek client"
+
