@@ -1,0 +1,86 @@
+services:
+  # Komodo - Build and Deploy Platform
+  komodo-mongo:
+    image: mongo:7
+    container_name: komodo-mongo
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "admin", "all"]
+    volumes:
+      - $DOCKERDIR/appdata/komodo/mongo/data:/data/db
+      - $DOCKERDIR/appdata/komodo/mongo/config:/data/configdb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${KOMODO_DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${KOMODO_DB_PASSWORD}
+
+  komodo-core:
+    image: ghcr.io/moghtech/komodo-core:latest
+    container_name: komodo-core
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "admin", "all"]
+    depends_on:
+      - komodo-mongo
+    networks:
+      - default
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/komodo/backups:/backups
+    environment:
+      TZ: $TZ
+      KOMODO_DATABASE_ADDRESS: komodo-mongo:27017
+      KOMODO_DATABASE_USERNAME: ${KOMODO_DB_USERNAME}
+      KOMODO_DATABASE_PASSWORD: ${KOMODO_DB_PASSWORD}
+      KOMODO_PASSKEY: ${KOMODO_PASSKEY}
+      KOMODO_HOST: https://komodo.$DOMAINNAME
+      KOMODO_TITLE: Komodo
+      KOMODO_FIRST_SERVER: http://komodo-periphery:8120
+      KOMODO_FIRST_SERVER_NAME: Local
+      KOMODO_WEBHOOK_SECRET: ${KOMODO_WEBHOOK_SECRET}
+      KOMODO_JWT_SECRET: ${KOMODO_JWT_SECRET}
+      KOMODO_INIT_ADMIN_USERNAME: ${KOMODO_INIT_ADMIN_USERNAME}
+      KOMODO_INIT_ADMIN_PASSWORD: ${KOMODO_INIT_ADMIN_PASSWORD}
+      KOMODO_DISABLE_USER_REGISTRATION: true
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.komodo-rtr.entrypoints=websecure"
+      - "traefik.http.routers.komodo-rtr.rule=Host(`komodo.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.komodo-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.komodo-rtr.service=komodo-svc"
+      - "traefik.http.services.komodo-svc.loadbalancer.server.port=9120"
+      ### Homepage
+      - "homepage.group=Admin"
+      - "homepage.name=Komodo"
+      - "homepage.icon=docker.png"
+      - "homepage.href=https://komodo.$DOMAINNAME"
+      - "homepage.description=Build, Deploy, and Auto-Update Platform"
+
+  komodo-periphery:
+    image: ghcr.io/moghtech/komodo-periphery:latest
+    container_name: komodo-periphery
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "admin", "all"]
+    depends_on:
+      - komodo-core
+    networks:
+      - default
+      - socket_proxy
+    volumes:
+      - /proc:/proc
+      - $DOCKERDIR/appdata/komodo/periphery:/etc/komodo
+    environment:
+      TZ: $TZ
+      DOCKER_HOST: tcp://socket-proxy:2375
+      PERIPHERY_ROOT_DIRECTORY: /etc/komodo
+      PERIPHERY_PASSKEYS: ${KOMODO_PASSKEY}
+      PERIPHERY_SSL_ENABLED: false
+      PERIPHERY_DISABLE_TERMINALS: false
+      PERIPHERY_INCLUDE_DISK_MOUNTS: /etc/hostname

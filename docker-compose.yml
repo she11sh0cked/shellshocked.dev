@@ -85,6 +85,7 @@ include:
   - compose/admin/dockge.yml
   - compose/admin/dozzle.yml
   - compose/admin/portainer.yml
+  - compose/admin/komodo.yml
   ### FRONTEND
   - compose/frontend/homepage.yml
   ### MEDIA
