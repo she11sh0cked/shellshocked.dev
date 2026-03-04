@@ -103,6 +103,7 @@ include:
   - compose/complementary/unpackerr.yml
   - compose/complementary/wizarr.yml
   - compose/complementary/ollama.yml
+  - compose/complementary/audiomuse-ai.yml
   ### MAINTENANCE
   - compose/maintenance/docker-gc.yml
   - compose/maintenance/deunhealth.yml
