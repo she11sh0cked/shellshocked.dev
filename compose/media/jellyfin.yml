@@ -1,8 +1,7 @@
 services:
   # Jellyfin - Media Server
   jellyfin:
-    # image: jellyfin/jellyfin:latest
-    image: ghcr.io/endrl/jellyfin:latest # Custom Jellyfin image with patch for segment skipping
+    image: jellyfin/jellyfin:latest
     container_name: jellyfin
     security_opt:
       - no-new-privileges:true
@@ -10,11 +9,10 @@ services:
     profiles: ["apps", "media", "all"]
     networks:
       - reverse_proxy
-    devices:
-      - /dev/dri:/dev/dri # for harware transcoding
     volumes:
       - $DOCKERDIR/appdata/jellyfin:/config
       - $DOCKERDIR/data/media:/data/media
+      - $DOCKERDIR/data/cache/jellyfin:/cache
       - /dev/shm:/data/transcode
     environment:
       TZ: $TZ
