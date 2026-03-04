@@ -112,6 +112,5 @@ include:
   - compose/maintenance/deunhealth.yml
   - compose/maintenance/docker-gc.yml
   - compose/maintenance/watchtower.yml
-- compose/maintenance/wud.yml
   ### SECURITY
 #  - compose/security/crowdsec.yml
