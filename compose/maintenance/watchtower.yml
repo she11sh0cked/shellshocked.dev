@@ -18,9 +18,12 @@ services:
       WATCHTOWER_SCHEDULE: "0 0 0 * * ?" # Everyday at midnight.
       WATCHTOWER_HTTP_API_METRICS: true
       WATCHTOWER_HTTP_API_TOKEN: /run/secrets/watchtower_key
+      WATCHTOWER_NOTIFICATION_REPORT: true
+      WATCHTOWER_NOTIFICATION_URL: /run/secrets/watchtower_notification_url
       DOCKER_HOST: tcp://socket-proxy:2375
     secrets:
       - watchtower_key
+      - watchtower_notification_url
     labels:
       ### Homepage
       - "homepage.group=Maintenance"
