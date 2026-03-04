@@ -63,6 +63,8 @@ secrets:
     file: $DOCKERDIR/secrets/notifiarr_key
   prowlarr_key:
     file: $DOCKERDIR/secrets/prowlarr_key
+  unpackerr_notification_url:
+    file: $DOCKERDIR/secrets/unpackerr_notification_url
   ### MAINTENANCE
   watchtower_key:
     file: $DOCKERDIR/secrets/watchtower_key

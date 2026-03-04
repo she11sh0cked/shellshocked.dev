@@ -23,10 +23,13 @@ services:
       UN_SONARR_0_API_KEY_FILE: /run/secrets/sonarr_key
       UN_SONARR_0_PATHS_0: /data/torrents
       UN_SONARR_0_URL: http://sonarr:8989
-      # UN_WEBHOOK_0_URL: $UNPACKERR_NOTIFICATION_URL
+      UN_WEBHOOK_0_URL_FILE: /run/secrets/unpackerr_notification_url
+      UN_WEBGOOK_0_NAME: "Notifiarr"
+      UN_WEBHOOK_0_EVENTS_0: 0
     secrets:
       - radarr_key
       - sonarr_key
+      - unpackerr_notification_url
     labels:
       ### Homepage
       - "homepage.group=Complementary"
