@@ -48,6 +48,12 @@ secrets:
     file: $DOCKERDIR/secrets/radarr_key
   lidarr_key:
     file: $DOCKERDIR/secrets/lidarr_key
+  navidrome_user:
+    file: $DOCKERDIR/secrets/navidrome_user
+  navidrome_token:
+    file: $DOCKERDIR/secrets/navidrome_token
+  navidrome_salt:
+    file: $DOCKERDIR/secrets/navidrome_salt
   ### COMPLEMENTARY APPS
   bazarr_key:
     file: $DOCKERDIR/secrets/bazarr_key
@@ -84,6 +90,7 @@ include:
   - compose/media/sonarr.yml
   - compose/media/radarr.yml
   - compose/media/lidarr.yml
+  - compose/media/navidrome.yml
   ### DOWNLOADERS
   - compose/downloaders/qbittorrent.yml
   ### COMPLEMENTARY APPS

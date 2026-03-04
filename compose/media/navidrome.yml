@@ -1,0 +1,50 @@
+services:
+  # Navidrome - Music server
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    user: "$PUID:$PGID"
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    networks:
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/navidrome:/data
+      - $DOCKERDIR/data/media/music:/music:ro
+    environment:
+      TZ: $TZ
+      ND_MUSICFOLDER: "/music"
+      ND_PLUGINS_ENABLED: "true"
+      ND_PLUGINS_AUTORELOAD: "true"
+      ND_AGENTS: "audiomuseai,lastfm,spotify,deezer"
+      ND_DEVARTISTINFOTIMETOLIVE: "1s"
+      ND_ENABLESHARING: "true"
+      ND_LASTFM_APIKEY: $NAVIDROME_LASTFM_APIKEY
+      ND_LASTFM_SECRET: $NAVIDROME_LASTFM_SECRET
+      ND_SPOTIFY_ID: $NAVIDROME_SPOTIFY_ID
+      ND_SPOTIFY_SECRET: $NAVIDROME_SPOTIFY_SECRET
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.navidrome-rtr.entrypoints=websecure"
+      - "traefik.http.routers.navidrome-rtr.rule=Host(`navidrome.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.navidrome-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.navidrome-rtr.service=navidrome-svc"
+      - "traefik.http.services.navidrome-svc.loadbalancer.server.port=4533"
+      ### Homepage
+      - "homepage.group=Media"
+      - "homepage.name=Navidrome"
+      - "homepage.icon=navidrome.png"
+      - "homepage.href=https://navidrome.$DOMAINNAME"
+      - "homepage.description=Music Server"
+      - "homepage.widget.type=navidrome"
+      - "homepage.widget.url=http://navidrome:4533"
+      - "homepage.widget.user={{HOMEPAGE_FILE_NAVIDROME_USER}}"
+      - "homepage.widget.token={{HOMEPAGE_FILE_NAVIDROME_TOKEN}}"
+      - "homepage.widget.salt={{HOMEPAGE_FILE_NAVIDROME_SALT}}"
+
