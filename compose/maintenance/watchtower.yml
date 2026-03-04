@@ -1,7 +1,7 @@
 services:
   # Watchtower - Automatic Docker Container Updates
   watchtower:
-    image: containrrr/watchtower:latest
+    image: nicholas-fedor/watchtower:latest
     container_name: watchtower
     security_opt:
       - no-new-privileges:true
