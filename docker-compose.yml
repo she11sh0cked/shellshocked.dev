@@ -109,8 +109,8 @@ include:
   - compose/complementary/ollama.yml
   - compose/complementary/audiomuse-ai.yml
   ### MAINTENANCE
-  - compose/maintenance/docker-gc.yml
   - compose/maintenance/deunhealth.yml
+  - compose/maintenance/docker-gc.yml
   - compose/maintenance/watchtower.yml
   ### SECURITY
-  - compose/security/crowdsec.yml
+#  - compose/security/crowdsec.yml
