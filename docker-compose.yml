@@ -29,14 +29,6 @@ secrets:
   ### ADMIN
   portainer_key:
     file: $DOCKERDIR/secrets/portainer_key
-  komodo_init_admin_password:
-    file: $DOCKERDIR/secrets/komodo_init_admin_password
-  komodo_jwt_secret:
-    file: $DOCKERDIR/secrets/komodo_jwt_secret
-  komodo_passkey:
-    file: $DOCKERDIR/secrets/komodo_passkey
-  komodo_webhook_secret:
-    file: $DOCKERDIR/secrets/komodo_webhook_secret
   proxmox_username:
     file: $DOCKERDIR/secrets/proxmox_username
   proxmox_password:
