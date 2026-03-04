@@ -1,0 +1,52 @@
+services:
+  # Ollama - local LLM backend
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "complementary", "all"]
+    environment:
+      TZ: $TZ
+      OLLAMA_HOST: "0.0.0.0:11434"
+    volumes:
+      - $DOCKERDIR/data/ollama:/root/.ollama
+
+  # Open WebUI - Web UI for local LLMs (Ollama)
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "complementary", "all"]
+    networks:
+      - reverse_proxy
+      - default
+    environment:
+      TZ: $TZ
+      OLLAMA_BASE_URL: "http://ollama:11434"
+      WEBUI_AUTH: "false"
+    volumes:
+      - $DOCKERDIR/appdata/open-webui:/app/backend/data
+    depends_on:
+      - ollama
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.open-webui-rtr.entrypoints=websecure"
+      - "traefik.http.routers.open-webui-rtr.rule=Host(`openwebui.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.open-webui-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.open-webui-rtr.service=open-webui-svc"
+      - "traefik.http.services.open-webui-svc.loadbalancer.server.port=8080"
+      ### Homepage
+      - "homepage.group=Complementary"
+      - "homepage.name=Open WebUI"
+      - "homepage.icon=openwebui.png"
+      - "homepage.href=https://openwebui.$DOMAINNAME"
+      - "homepage.description=Local LLM Web UI"
+

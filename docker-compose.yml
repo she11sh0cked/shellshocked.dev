@@ -102,6 +102,7 @@ include:
   - compose/complementary/prowlarr.yml
   - compose/complementary/unpackerr.yml
   - compose/complementary/wizarr.yml
+  - compose/complementary/ollama.yml
   ### MAINTENANCE
   - compose/maintenance/docker-gc.yml
   - compose/maintenance/deunhealth.yml
