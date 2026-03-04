@@ -10,6 +10,7 @@ services:
     profiles: ["apps", "complementary", "all"]
     networks:
       - reverse_proxy
+    hostname: notifiarr
     volumes:
       - /var/run/utmp:/var/run/utmp
       - /etc/machine-id:/etc/machine-id
@@ -20,7 +21,6 @@ services:
       PUID: $PUID
       PGID: $PGID
       DN_API_KEY_FILE: /run/secrets/notifiarr_key
-      DN_AUTO_UPDATE: off
       DN_PROWLARR_0_NAME: Prowlarr
       DN_PROWLARR_0_URL: http://prowlarr:9696
       DN_PROWLARR_0_API_KEY_FILE: /run/secrets/prowlarr_key
@@ -44,7 +44,7 @@ services:
       - "traefik.http.routers.notifiarr-rtr.entrypoints=websecure"
       - "traefik.http.routers.notifiarr-rtr.rule=Host(`notifiarr.$DOMAINNAME`)"
       # Middlewares
-      - "traefik.http.routers.notifiarr-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.notifiarr-rtr.middlewares=chain-no-auth@file"
       # HTTP Services
       - "traefik.http.routers.notifiarr-rtr.service=notifiarr-svc"
       - "traefik.http.services.notifiarr-svc.loadbalancer.server.port=5454"
