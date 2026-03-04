@@ -1,0 +1,40 @@
+services:
+  # WUD - What's Up Docker (container update monitor + updater)
+  wud:
+    image: getwud/wud:latest
+    container_name: wud
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "maintenance", "all"]
+    networks:
+      - reverse_proxy
+      - socket_proxy
+    volumes:
+      - $DOCKERDIR/appdata/wud:/store
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      WUD_WATCHER_LOCAL_HOST: socket-proxy
+      WUD_WATCHER_LOCAL_PORT: 2375
+      WUD_WATCHER_LOCAL_CRON: 0 0 * * *
+      WUD_TRIGGER_DOCKER_LOCAL_PRUNE: true
+    labels:
+      - wud.watch=false
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.wud-rtr.entrypoints=websecure"
+      - "traefik.http.routers.wud-rtr.rule=Host(`wud.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.wud-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.wud-rtr.service=wud-svc"
+      - "traefik.http.services.wud-svc.loadbalancer.server.port=3000"
+      ### Homepage
+      - "homepage.group=Maintenance"
+      - "homepage.name=WUD"
+      - "homepage.icon=docker.png"
+      - "homepage.href=https://wud.$DOMAINNAME"
+      - "homepage.description=Container update monitor and updater"
