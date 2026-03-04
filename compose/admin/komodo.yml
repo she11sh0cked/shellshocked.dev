@@ -11,8 +11,8 @@ services:
       - $DOCKERDIR/appdata/komodo/mongo/data:/data/db
       - $DOCKERDIR/appdata/komodo/mongo/config:/data/configdb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${KOMODO_DB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${KOMODO_DB_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: komodo
+      MONGO_INITDB_ROOT_PASSWORD: komodo
 
   komodo-core:
     image: ghcr.io/moghtech/komodo-core:latest
@@ -31,18 +31,23 @@ services:
     environment:
       TZ: $TZ
       KOMODO_DATABASE_ADDRESS: komodo-mongo:27017
-      KOMODO_DATABASE_USERNAME: ${KOMODO_DB_USERNAME}
-      KOMODO_DATABASE_PASSWORD: ${KOMODO_DB_PASSWORD}
-      KOMODO_PASSKEY: ${KOMODO_PASSKEY}
+      KOMODO_DATABASE_USERNAME: komodo
+      KOMODO_DATABASE_PASSWORD: komodo
+      KOMODO_PASSKEY_FILE: /run/secrets/komodo_passkey
       KOMODO_HOST: https://komodo.$DOMAINNAME
       KOMODO_TITLE: Komodo
       KOMODO_FIRST_SERVER: http://komodo-periphery:8120
       KOMODO_FIRST_SERVER_NAME: Local
-      KOMODO_WEBHOOK_SECRET: ${KOMODO_WEBHOOK_SECRET}
-      KOMODO_JWT_SECRET: ${KOMODO_JWT_SECRET}
+      KOMODO_WEBHOOK_SECRET_FILE: /run/secrets/komodo_webhook_secret
+      KOMODO_JWT_SECRET_FILE: /run/secrets/komodo_jwt_secret
       KOMODO_INIT_ADMIN_USERNAME: ${KOMODO_INIT_ADMIN_USERNAME}
-      KOMODO_INIT_ADMIN_PASSWORD: ${KOMODO_INIT_ADMIN_PASSWORD}
+      KOMODO_INIT_ADMIN_PASSWORD_FILE: /run/secrets/komodo_init_admin_password
       KOMODO_DISABLE_USER_REGISTRATION: true
+    secrets:
+      - komodo_passkey
+      - komodo_webhook_secret
+      - komodo_jwt_secret
+      - komodo_init_admin_password
     labels:
       ### Traefik
       - "traefik.enable=true"
@@ -80,7 +85,9 @@ services:
       TZ: $TZ
       DOCKER_HOST: tcp://socket-proxy:2375
       PERIPHERY_ROOT_DIRECTORY: /etc/komodo
-      PERIPHERY_PASSKEYS: ${KOMODO_PASSKEY}
+      PERIPHERY_PASSKEYS_FILE: /run/secrets/komodo_passkey
       PERIPHERY_SSL_ENABLED: false
       PERIPHERY_DISABLE_TERMINALS: false
       PERIPHERY_INCLUDE_DISK_MOUNTS: /etc/hostname
+    secrets:
+      - komodo_passkey
