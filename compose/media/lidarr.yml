@@ -1,0 +1,43 @@
+services:
+  # Lidarr - Music management
+  lidarr:
+    build:
+      context: .
+      dockerfile: lidarr.dockerfile
+    container_name: lidarr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    networks:
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/lidarr:/config
+      - $DOCKERDIR/data:/data
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.lidarr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.lidarr-rtr.rule=Host(`lidarr.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.lidarr-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.lidarr-rtr.service=lidarr-svc"
+      - "traefik.http.services.lidarr-svc.loadbalancer.server.port=8686"
+      ### Homepage
+      - "homepage.group=Media"
+      - "homepage.name=Lidarr"
+      - "homepage.icon=lidarr.png"
+      - "homepage.href=https://lidarr.$DOMAINNAME"
+      - "homepage.description=Music Management"
+      - "homepage.widget.type=lidarr"
+      - "homepage.widget.url=http://lidarr:8686"
+      - "homepage.widget.key={{HOMEPAGE_FILE_LIDARR_KEY}}"
+      - 'homepage.widget.fields=["wanted","queued","artists"]'
+

@@ -46,6 +46,8 @@ secrets:
     file: $DOCKERDIR/secrets/sonarr_key
   radarr_key:
     file: $DOCKERDIR/secrets/radarr_key
+  lidarr_key:
+    file: $DOCKERDIR/secrets/lidarr_key
   ### COMPLEMENTARY APPS
   bazarr_key:
     file: $DOCKERDIR/secrets/bazarr_key
@@ -81,6 +83,7 @@ include:
   - compose/media/nextcloud.yml
   - compose/media/sonarr.yml
   - compose/media/radarr.yml
+  - compose/media/lidarr.yml
   ### DOWNLOADERS
   - compose/downloaders/qbittorrent.yml
   ### COMPLEMENTARY APPS

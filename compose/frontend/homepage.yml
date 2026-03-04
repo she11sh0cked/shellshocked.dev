@@ -21,6 +21,7 @@ services:
       HOMEPAGE_FILE_IMMICH_KEY: /run/secrets/immich_key
       HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/jellyfin_key
       HOMEPAGE_FILE_JELLYSEERR_KEY: /run/secrets/jellyseerr_key
+      HOMEPAGE_FILE_LIDARR_KEY: /run/secrets/lidarr_key
       HOMEPAGE_FILE_NEXTCLOUD_KEY: /run/secrets/nextcloud_key
       HOMEPAGE_FILE_PORTAINER_KEY: /run/secrets/portainer_key
       HOMEPAGE_FILE_PROWLARR_KEY: /run/secrets/prowlarr_key
@@ -36,6 +37,7 @@ services:
       - immich_key
       - jellyfin_key
       - jellyseerr_key
+      - lidarr_key
       - nextcloud_key
       - portainer_key
       - prowlarr_key
