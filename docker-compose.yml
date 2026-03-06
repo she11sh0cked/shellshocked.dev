@@ -106,7 +106,7 @@ include:
   - compose/complementary/prowlarr.yml
   - compose/complementary/unpackerr.yml
   - compose/complementary/wizarr.yml
-  - compose/complementary/ollama.yml
+  - compose/complementary/llama-cpp.yml
   - compose/complementary/audiomuse-ai.yml
   ### MAINTENANCE
   - compose/maintenance/deunhealth.yml

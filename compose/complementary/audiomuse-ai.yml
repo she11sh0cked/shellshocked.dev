@@ -50,15 +50,16 @@ services:
       POSTGRES_HOST: audiomuse-db
       POSTGRES_PORT: 5432
       REDIS_URL: redis://audiomuse-redis:6379/0
-      AI_MODEL_PROVIDER: ollama
-      OLLAMA_SERVER_URL: http://ollama:11434/api/generate
-      # OLLAMA_MODEL_NAME: qwen2.5:3b
+      AI_MODEL_PROVIDER: OpenAI
+      OPENAI_API_KEY: $LLAMA_CPP_API_KEY
+      OPENAI_SERVER_URL: http://llama-cpp:8080/v1/chat/completions
+      OPENAI_MODEL_NAME: $LLAMA_CPP_MODEL_NAME
     volumes:
       - $DOCKERDIR/appdata/audiomuse-ai/temp/flask:/app/temp_audio
     depends_on:
       - audiomuse-redis
       - audiomuse-db
-      - ollama
+      - llama-cpp
     labels:
       ### Traefik
       - "traefik.enable=true"
@@ -101,13 +102,13 @@ services:
       POSTGRES_HOST: audiomuse-db
       POSTGRES_PORT: 5432
       REDIS_URL: redis://audiomuse-redis:6379/0
-      AI_MODEL_PROVIDER: ollama
-      OLLAMA_SERVER_URL: http://ollama:11434/api/generate
-      # OLLAMA_MODEL_NAME: qwen2.5:3b
+      AI_MODEL_PROVIDER: OpenAI
+      OPENAI_API_KEY: $LLAMA_CPP_API_KEY
+      OPENAI_SERVER_URL: http://llama-cpp:8080/v1/chat/completions
+      OPENAI_MODEL_NAME: $LLAMA_CPP_MODEL_NAME
     volumes:
       - $DOCKERDIR/appdata/audiomuse-ai/temp/worker:/app/temp_audio
     depends_on:
       - audiomuse-redis
       - audiomuse-db
-      - ollama
-
+      - llama-cpp

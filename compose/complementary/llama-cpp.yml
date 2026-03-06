@@ -1,19 +1,25 @@
 services:
-  # Ollama - local LLM backend
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
+  # llama.cpp - local LLM backend
+  llama-cpp:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    container_name: llama-cpp
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
     profiles: ["apps", "complementary", "all"]
     environment:
       TZ: $TZ
-      OLLAMA_HOST: "0.0.0.0:11434"
+      LLAMA_ARG_HF_REPO: $LLAMA_CPP_HF_MODEL
+      LLAMA_ARG_ALIAS: $LLAMA_CPP_MODEL_NAME
+      LLAMA_ARG_HOST: "0.0.0.0"
+      LLAMA_ARG_PORT: "8080"
+      LLAMA_ARG_CTX_SIZE: $LLAMA_CPP_CTX_SIZE
+      LLAMA_ARG_N_PARALLEL: $LLAMA_CPP_PARALLEL
+      LLAMA_API_KEY: $LLAMA_CPP_API_KEY
     volumes:
-      - $DOCKERDIR/data/ollama:/root/.ollama
+      - $DOCKERDIR/data/llama-cpp:/root/.cache
 
-  # Open WebUI - Web UI for local LLMs (Ollama)
+  # Open WebUI - Web UI for local LLMs (llama.cpp)
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
@@ -26,12 +32,16 @@ services:
       - default
     environment:
       TZ: $TZ
-      OLLAMA_BASE_URL: "http://ollama:11434"
+      ENABLE_OLLAMA_API: "false"
+      ENABLE_OPENAI_API: "true"
+      OPENAI_API_BASE_URL: "http://llama-cpp:8080/v1"
+      OPENAI_API_KEY: $LLAMA_CPP_API_KEY
+      TASK_MODEL_EXTERNAL: $LLAMA_CPP_MODEL_NAME
       WEBUI_AUTH: "false"
     volumes:
       - $DOCKERDIR/appdata/open-webui:/app/backend/data
     depends_on:
-      - ollama
+      - llama-cpp
     labels:
       ### Traefik
       - "traefik.enable=true"
@@ -49,4 +59,3 @@ services:
       - "homepage.icon=openwebui.png"
       - "homepage.href=https://openwebui.$DOMAINNAME"
       - "homepage.description=Local LLM Web UI"
-
