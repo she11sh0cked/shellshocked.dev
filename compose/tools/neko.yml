@@ -33,7 +33,7 @@ services:
       - "traefik.http.routers.neko-rtr.service=neko-svc"
       - "traefik.http.services.neko-svc.loadbalancer.server.port=8080"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Tools"
       - "homepage.name=Neko"
       - "homepage.icon=neko.png"
       - "homepage.href=https://neko.$DOMAINNAME"

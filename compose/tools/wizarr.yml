@@ -27,7 +27,7 @@ services:
       - "traefik.http.routers.wizarr-rtr.service=wizarr-svc"
       - "traefik.http.services.wizarr-svc.loadbalancer.server.port=5690"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Tools"
       - "homepage.name=Wizarr"
       - "homepage.icon=wizarr.png"
       - "homepage.href=https://wizarr.$DOMAINNAME"

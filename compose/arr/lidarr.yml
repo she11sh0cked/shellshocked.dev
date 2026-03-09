@@ -31,7 +31,7 @@ services:
       - "traefik.http.routers.lidarr-rtr.service=lidarr-svc"
       - "traefik.http.services.lidarr-svc.loadbalancer.server.port=8686"
       ### Homepage
-      - "homepage.group=Media"
+      - "homepage.group=Arr"
       - "homepage.name=Lidarr"
       - "homepage.icon=lidarr.png"
       - "homepage.href=https://lidarr.$DOMAINNAME"

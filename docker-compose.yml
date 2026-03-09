@@ -85,29 +85,29 @@ include:
   - compose/admin/dockge.yml
   - compose/admin/dozzle.yml
   - compose/admin/portainer.yml
-  ### FRONTEND
-  - compose/frontend/homepage.yml
+  - compose/admin/homepage.yml
   ### MEDIA
   - compose/media/immich.yml
   - compose/media/jellyfin.yml
   - compose/media/nextcloud.yml
-  - compose/media/sonarr.yml
-  - compose/media/radarr.yml
-  - compose/media/lidarr.yml
   - compose/media/navidrome.yml
+  ### ARR
+  - compose/arr/sonarr.yml
+  - compose/arr/radarr.yml
+  - compose/arr/lidarr.yml
+  - compose/arr/prowlarr.yml
+  - compose/arr/bazarr.yml
   ### DOWNLOADERS
   - compose/downloaders/qbittorrent.yml
   - compose/downloaders/slskd.yml
-  ### COMPLEMENTARY APPS
-  - compose/complementary/bazarr.yml
-  - compose/complementary/jellyseerr.yml
-  - compose/complementary/neko.yml
-  - compose/complementary/notifiarr.yml
-  - compose/complementary/prowlarr.yml
-  - compose/complementary/unpackerr.yml
-  - compose/complementary/wizarr.yml
-  - compose/complementary/llama-cpp.yml
-  - compose/complementary/audiomuse-ai.yml
+  ### TOOLS
+  - compose/tools/jellyseerr.yml
+  - compose/tools/neko.yml
+  - compose/tools/notifiarr.yml
+  - compose/tools/wizarr.yml
+  - compose/tools/unpackerr.yml
+  - compose/tools/llama-cpp.yml
+  - compose/tools/audiomuse-ai.yml
   ### MAINTENANCE
   - compose/maintenance/deunhealth.yml
   - compose/maintenance/docker-gc.yml

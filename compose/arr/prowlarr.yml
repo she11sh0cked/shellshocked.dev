@@ -28,7 +28,7 @@ services:
       - "traefik.http.routers.prowlarr-rtr.service=prowlarr-svc"
       - "traefik.http.services.prowlarr-svc.loadbalancer.server.port=9696"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Arr"
       - "homepage.name=Prowlarr"
       - "homepage.icon=prowlarr.png"
       - "homepage.href=https://prowlarr.$DOMAINNAME"

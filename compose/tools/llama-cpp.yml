@@ -54,7 +54,7 @@ services:
       - "traefik.http.routers.open-webui-rtr.service=open-webui-svc"
       - "traefik.http.services.open-webui-svc.loadbalancer.server.port=8080"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Tools"
       - "homepage.name=Open WebUI"
       - "homepage.icon=openwebui.png"
       - "homepage.href=https://openwebui.$DOMAINNAME"

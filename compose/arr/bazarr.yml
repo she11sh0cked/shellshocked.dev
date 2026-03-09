@@ -28,7 +28,7 @@ services:
       - "traefik.http.routers.bazarr-rtr.service=bazarr-svc"
       - "traefik.http.services.bazarr-svc.loadbalancer.server.port=6767"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Arr"
       - "homepage.name=Bazarr"
       - "homepage.icon=bazarr.png"
       - "homepage.href=https://bazarr.$DOMAINNAME"

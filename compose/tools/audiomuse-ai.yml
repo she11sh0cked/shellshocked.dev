@@ -72,7 +72,7 @@ services:
       - "traefik.http.routers.audiomuse-ai-rtr.service=audiomuse-ai-svc"
       - "traefik.http.services.audiomuse-ai-svc.loadbalancer.server.port=8000"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Tools"
       - "homepage.name=AudioMuse-AI"
       - "homepage.icon=music.png"
       - "homepage.href=https://audiomuse.$DOMAINNAME"

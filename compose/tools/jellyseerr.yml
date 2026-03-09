@@ -27,7 +27,7 @@ services:
       - "traefik.http.routers.jellyseerr-rtr.service=jellyseerr-svc"
       - "traefik.http.services.jellyseerr-svc.loadbalancer.server.port=5055"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Tools"
       - "homepage.name=Jellyseerr"
       - "homepage.icon=jellyseerr.png"
       - "homepage.href=https://jellyseerr.$DOMAINNAME"

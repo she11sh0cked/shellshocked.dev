@@ -49,7 +49,7 @@ services:
       - "traefik.http.routers.notifiarr-rtr.service=notifiarr-svc"
       - "traefik.http.services.notifiarr-svc.loadbalancer.server.port=5454"
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Tools"
       - "homepage.name=Notifiarr"
       - "homepage.icon=notifiarr.png"
       - "homepage.href=https://notifiarr.$DOMAINNAME"

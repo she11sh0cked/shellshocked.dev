@@ -32,7 +32,7 @@ services:
       - unpackerr_notification_url
     labels:
       ### Homepage
-      - "homepage.group=Complementary"
+      - "homepage.group=Tools"
       - "homepage.name=Unpackerr"
       - "homepage.icon=https://unpackerr.zip/img/icon.png"
       - "homepage.description=Automated Archive Extractions"
