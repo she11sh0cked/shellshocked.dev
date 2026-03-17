@@ -11,7 +11,7 @@ services:
       - reverse_proxy
     volumes:
       - $DOCKERDIR/appdata/beets:/config
-      - $DOCKERDIR/data:/data
+      - $DOCKERDIR/data/media/music:/music
     environment:
       TZ: $TZ
       PUID: $PUID
