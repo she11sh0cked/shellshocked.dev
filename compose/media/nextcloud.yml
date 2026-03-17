@@ -6,6 +6,7 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
+    profiles: ["apps", "media", "all"]
     depends_on:
       - nextcloud-db
     networks:
@@ -59,6 +60,7 @@ services:
       - no-new-privileges:true
     command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     restart: unless-stopped
+    profiles: ["apps", "media", "all"]
     networks:
       - reverse_proxy
     volumes:

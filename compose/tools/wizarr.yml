@@ -6,7 +6,7 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
-    profiles: ["apps", "complementary", "all"]
+    profiles: ["apps", "tools", "all"]
     networks:
       - reverse_proxy
     volumes:

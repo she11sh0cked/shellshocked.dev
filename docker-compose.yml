@@ -42,34 +42,35 @@ secrets:
     file: $DOCKERDIR/secrets/nextcloud_key
   nextcloud_db_password:
     file: $DOCKERDIR/secrets/nextcloud_db_password
-  sonarr_key:
-    file: $DOCKERDIR/secrets/sonarr_key
-  radarr_key:
-    file: $DOCKERDIR/secrets/radarr_key
-  lidarr_key:
-    file: $DOCKERDIR/secrets/lidarr_key
   navidrome_user:
     file: $DOCKERDIR/secrets/navidrome_user
   navidrome_token:
     file: $DOCKERDIR/secrets/navidrome_token
   navidrome_salt:
     file: $DOCKERDIR/secrets/navidrome_salt
-  ### COMPLEMENTARY APPS
+  ### ARR
+  sonarr_key:
+    file: $DOCKERDIR/secrets/sonarr_key
+  radarr_key:
+    file: $DOCKERDIR/secrets/radarr_key
+  lidarr_key:
+    file: $DOCKERDIR/secrets/lidarr_key
   bazarr_key:
     file: $DOCKERDIR/secrets/bazarr_key
+  prowlarr_key:
+    file: $DOCKERDIR/secrets/prowlarr_key
+  ### TOOLS
   jellyseerr_key:
     file: $DOCKERDIR/secrets/jellyseerr_key
   notifiarr_key:
     file: $DOCKERDIR/secrets/notifiarr_key
-  prowlarr_key:
-    file: $DOCKERDIR/secrets/prowlarr_key
   unpackerr_notification_url:
     file: $DOCKERDIR/secrets/unpackerr_notification_url
-  watchtower_notification_url:
-    file: $DOCKERDIR/secrets/watchtower_notification_url
   ### MAINTENANCE
   watchtower_key:
     file: $DOCKERDIR/secrets/watchtower_key
+  watchtower_notification_url:
+    file: $DOCKERDIR/secrets/watchtower_notification_url
   ### SECURITY
   crowdsec_discord_webhook:
     file: $DOCKERDIR/secrets/crowdsec_discord_webhook

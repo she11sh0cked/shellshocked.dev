@@ -6,7 +6,7 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
-    profiles: ["apps", "frontend", "all"]
+    profiles: ["apps", "admin", "all"]
     networks:
       - reverse_proxy
       - socket_proxy

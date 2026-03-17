@@ -50,6 +50,7 @@ services:
     image: docker.io/valkey/valkey:8-bookworm
     container_name: immich-redis
     restart: unless-stopped
+    profiles: ["apps", "media", "all"]
     networks:
       - reverse_proxy
 
@@ -57,6 +58,7 @@ services:
     image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
     container_name: immich-db
     restart: unless-stopped
+    profiles: ["apps", "media", "all"]
     networks:
       - reverse_proxy
     volumes:

@@ -7,7 +7,7 @@ services:
       - no-new-privileges:true
     shm_size: "2gb"
     restart: unless-stopped
-    profiles: ["apps", "complementary", "all"]
+    profiles: ["apps", "tools", "all"]
     networks:
       - reverse_proxy
     ports:
