@@ -108,6 +108,7 @@ include:
   - compose/tools/unpackerr.yml
   - compose/tools/llama-cpp.yml
   - compose/tools/audiomuse-ai.yml
+  - compose/tools/beets.yml
   ### MAINTENANCE
   - compose/maintenance/deunhealth.yml
   - compose/maintenance/docker-gc.yml

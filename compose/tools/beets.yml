@@ -1,0 +1,35 @@
+services:
+  # Beets - Music library manager and tagger
+  beets:
+    image: lscr.io/linuxserver/beets:latest
+    container_name: beets
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    networks:
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/beets:/config
+      - $DOCKERDIR/data:/data
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.beets-rtr.entrypoints=websecure"
+      - "traefik.http.routers.beets-rtr.rule=Host(`beets.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.beets-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.beets-rtr.service=beets-svc"
+      - "traefik.http.services.beets-svc.loadbalancer.server.port=8337"
+      ### Homepage
+      - "homepage.group=Tools"
+      - "homepage.name=Beets"
+      - "homepage.icon=beets.png"
+      - "homepage.href=https://beets.$DOMAINNAME"
+      - "homepage.description=Music Library Manager"
