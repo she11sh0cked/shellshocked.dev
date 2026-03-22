@@ -56,6 +56,6 @@ services:
       ### Homepage
       - "homepage.group=Tools"
       - "homepage.name=Open WebUI"
-      - "homepage.icon=openwebui.png"
+      - "homepage.icon=open-webui.png"
       - "homepage.href=https://openwebui.$DOMAINNAME"
       - "homepage.description=Local LLM Web UI"

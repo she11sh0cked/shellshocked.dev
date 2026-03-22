@@ -33,6 +33,6 @@ services:
       ### Homepage
       - "homepage.group=Tools"
       - "homepage.name=Aurral"
-      - "homepage.icon=lidarr.png"
+      - "homepage.icon=aurral.png"
       - "homepage.href=https://aurral.$DOMAINNAME"
       - "homepage.description=Music Discovery & Requests"

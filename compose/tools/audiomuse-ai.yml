@@ -74,7 +74,7 @@ services:
       ### Homepage
       - "homepage.group=Tools"
       - "homepage.name=AudioMuse-AI"
-      - "homepage.icon=music.png"
+      - "homepage.icon=hl-audiomuse-ai.png"
       - "homepage.href=https://audiomuse.$DOMAINNAME"
       - "homepage.description=Audio similarity for Navidrome"
 
