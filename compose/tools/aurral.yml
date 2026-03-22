@@ -1,0 +1,38 @@
+services:
+  # Aurral - Music Discovery & Request Tool for Lidarr
+  aurral:
+    image: ghcr.io/lklynet/aurral:latest
+    container_name: aurral
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "tools", "all"]
+    networks:
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/aurral:/app/backend/data
+      - $DOCKERDIR/data/downloads/aurral:/app/downloads
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      DOWNLOAD_FOLDER: /app/downloads
+      TRUST_PROXY: 1
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.aurral-rtr.entrypoints=websecure"
+      - "traefik.http.routers.aurral-rtr.rule=Host(`aurral.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.aurral-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.aurral-rtr.service=aurral-svc"
+      - "traefik.http.services.aurral-svc.loadbalancer.server.port=3001"
+      ### Homepage
+      - "homepage.group=Tools"
+      - "homepage.name=Aurral"
+      - "homepage.icon=lidarr.png"
+      - "homepage.href=https://aurral.$DOMAINNAME"
+      - "homepage.description=Music Discovery & Requests"
