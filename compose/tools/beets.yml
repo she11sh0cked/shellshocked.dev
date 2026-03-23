@@ -33,3 +33,7 @@ services:
       - "homepage.icon=beets.png"
       - "homepage.href=https://beets.$DOMAINNAME"
       - "homepage.description=Music Library Manager"
+      ### Ofelia
+      - "ofelia.enabled=true"
+      - "ofelia.job-exec.beets-import.schedule=@every 6h"
+      - "ofelia.job-exec.beets-import.command=/config/beets.sh /music"
