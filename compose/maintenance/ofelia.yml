@@ -1,0 +1,21 @@
+services:
+  # Ofelia - Docker job scheduler
+  ofelia:
+    image: mcuadros/ofelia:latest
+    container_name: ofelia
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["core", "all"]
+    networks:
+      - socket_proxy
+    environment:
+      TZ: $TZ
+      DOCKER_HOST: tcp://socket-proxy:2375
+    command: daemon --docker
+    labels:
+      ### Homepage
+      - "homepage.group=Maintenance"
+      - "homepage.name=Ofelia"
+      - "homepage.icon=ofelia.png"
+      - "homepage.description=Docker Job Scheduler"
