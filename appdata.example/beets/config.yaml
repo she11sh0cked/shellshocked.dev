@@ -47,6 +47,10 @@ replaygain:
     auto: yes
     backend: gstreamer
 
+lyrics:
+    synced: yes
+    sources: lrclib
+
 scrub:
     auto: yes
 
