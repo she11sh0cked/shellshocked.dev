@@ -1,9 +1,7 @@
 services:
   # Lidarr - Music management
   lidarr:
-    build:
-      context: .
-      dockerfile: lidarr.dockerfile
+    image: linuxserver/lidarr:nightly
     container_name: lidarr
     security_opt:
       - no-new-privileges:true
@@ -13,6 +11,7 @@ services:
       - reverse_proxy
     volumes:
       - $DOCKERDIR/appdata/lidarr:/config
+      - $DOCKERDIR/appdata/lidarr/custom-cont-init.d:/custom-cont-init.d:ro
       - $DOCKERDIR/data:/data
       - "/etc/localtime:/etc/localtime:ro"
     environment:
