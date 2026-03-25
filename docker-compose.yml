@@ -110,7 +110,6 @@ include:
   - compose/tools/llama-cpp.yml
   - compose/tools/audiomuse-ai.yml
   - compose/tools/beets.yml
-  - compose/tools/essentia-tagger.yml
   - compose/tools/aurral.yml
   ### MAINTENANCE
   - compose/maintenance/deunhealth.yml
