@@ -1,4 +1,4 @@
-plugins: fetchart lyrics lastgenre embedart extrafiles duplicates scrub replaygain musicbrainz chroma web
+plugins: fetchart lyrics lastgenre embedart extrafiles duplicates replaygain musicbrainz chroma web
 directory: /music
 library: /config/musiclibrary.blb
 art_filename: albumart
@@ -50,9 +50,6 @@ replaygain:
 lyrics:
     synced: yes
     sources: lrclib
-
-scrub:
-    auto: yes
 
 
 replace:
