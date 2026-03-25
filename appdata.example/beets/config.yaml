@@ -1,4 +1,4 @@
-plugins: fetchart lyrics lastgenre embedart extrafiles duplicates scrub replaygain musicbrainz chroma web vibenet
+plugins: fetchart lyrics lastgenre embedart extrafiles duplicates scrub replaygain musicbrainz chroma web
 directory: /music
 library: /config/musiclibrary.blb
 art_filename: albumart
@@ -50,8 +50,6 @@ replaygain:
 scrub:
     auto: yes
 
-vibenet:
-    auto: yes
 
 replace:
     '^\.': _
