@@ -10,7 +10,6 @@ services:
     profiles: ["apps", "tools", "all"]
     entrypoint: ["tail", "-f", "/dev/null"]
     volumes:
-      - $DOCKERDIR/data/essentia-models:/app/essentia_models
       - $DOCKERDIR/data/media/music:/music
     environment:
       TZ: $TZ
