@@ -1,0 +1,26 @@
+services:
+  # Essentia Tagger - ML-based mood detection and audio tagging
+  essentia-tagger:
+    build:
+      context: https://github.com/WB2024/Essentia-to-Metadata.git
+    container_name: essentia-tagger
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "tools", "all"]
+    entrypoint: ["tail", "-f", "/dev/null"]
+    volumes:
+      - $DOCKERDIR/data/essentia-models:/app/essentia_models
+      - $DOCKERDIR/data/media/music:/music
+    environment:
+      TZ: $TZ
+    labels:
+      ### Homepage
+      - "homepage.group=Tools"
+      - "homepage.name=Essentia Tagger"
+      - "homepage.icon=muse-ai.png"
+      - "homepage.description=Mood tag analyzer"
+      ### Ofelia — runs after beets import window; skips already-tagged files
+      - "ofelia.enabled=true"
+      - "ofelia.job-exec.essentia-tag.schedule=@every 6h"
+      - "ofelia.job-exec.essentia-tag.command=python tag_music.py /music --auto --no-genres"
