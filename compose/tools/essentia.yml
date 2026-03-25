@@ -1,28 +1,25 @@
 services:
-  # Essentia - Local genre and mood tagger
+  # Essentia - ML-based mood detection and audio tagging
   essentia:
     build:
       context: https://github.com/WB2024/Essentia-to-Metadata.git
-    image: shellshocked/essentia-tagger:latest
     container_name: essentia
-    user: "${PUID}:${PGID}"
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
     profiles: ["apps", "tools", "all"]
-    working_dir: /config
-    entrypoint:
-      - /bin/sh
-      - -c
-      - sleep infinity
+    entrypoint: ["tail", "-f", "/dev/null"]
     volumes:
-      - $DOCKERDIR/appdata/essentia:/config
       - $DOCKERDIR/data/media/music:/music
     environment:
       TZ: $TZ
-      HOME: /config
     labels:
-      ### Ofelia
+      ### Homepage
+      - "homepage.group=Tools"
+      - "homepage.name=Essentia Tagger"
+      - "homepage.icon=essentia.png"
+      - "homepage.description=Mood tag analyzer"
+      ### Ofelia — runs after beets import window; skips already-tagged files
       - "ofelia.enabled=true"
       - "ofelia.job-exec.essentia-tag.schedule=@every 6h"
-      - "ofelia.job-exec.essentia-tag.command=python /app/docker-entrypoint.py --model-dir /app/essentia_models --log-dir /config/logs /music --auto"
+      - "ofelia.job-exec.essentia-tag.command=python /app/tag_music.py /music --auto --no-genres --model-dir /app/essentia_models"
