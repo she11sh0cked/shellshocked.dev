@@ -54,6 +54,7 @@ services:
       OPENAI_API_KEY: $LLAMA_CPP_API_KEY
       OPENAI_SERVER_URL: http://llama-cpp:8080/v1/chat/completions
       OPENAI_MODEL_NAME: $LLAMA_CPP_MODEL_NAME
+      AUTH_ENABLED: "false"
     volumes:
       - $DOCKERDIR/appdata/audiomuse-ai/temp/flask:/app/temp_audio
     depends_on:
