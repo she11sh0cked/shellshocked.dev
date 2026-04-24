@@ -11,8 +11,6 @@ services:
       - socket_proxy
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       WATCHTOWER_CLEANUP: true
       WATCHTOWER_INCLUDE_RESTARTING: true
       WATCHTOWER_SCHEDULE: "0 0 0 * * ?" # Everyday at midnight.

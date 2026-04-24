@@ -68,8 +68,6 @@ services:
       - $DOCKERDIR/logs/traefik:/logs # Traefik logs
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       CF_DNS_API_TOKEN_FILE: /run/secrets/cloudflare_traefik_key
       DOMAINNAME: $DOMAINNAME
       PROXMOX_URL: $PROXMOX_URL

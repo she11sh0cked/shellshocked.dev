@@ -18,8 +18,6 @@ services:
       - $DOCKERDIR/data/media/music:/data/media/music
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       SLSKD_REMOTE_CONFIGURATION: "true"
       SLSKD_INCOMPLETE_DIR: "/data/downloads/soulseek/incomplete"
       SLSKD_DOWNLOADS_DIR: "/data/downloads/soulseek/complete"

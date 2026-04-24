@@ -17,8 +17,6 @@ services:
       - $DOCKERDIR/data:/mnt/data
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       MYSQL_HOST: nextcloud-db
       MYSQL_DATABASE: nextcloud
       MYSQL_USER: nextcloud
@@ -67,8 +65,6 @@ services:
       - $DOCKERDIR/appdata/nextcloud-db:/var/lib/mysql
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       MYSQL_DATABASE: nextcloud
       MYSQL_USER: nextcloud
       MYSQL_PASSWORD_FILE: /run/secrets/nextcloud_db_password

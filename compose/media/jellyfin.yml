@@ -3,6 +3,7 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
+    user: "$PUID:$PGID"
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -16,9 +17,6 @@ services:
       - /dev/shm:/data/transcode
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
-      UMASK_SET: 022
     labels:
       ### Traefik
       - "traefik.enable=true"

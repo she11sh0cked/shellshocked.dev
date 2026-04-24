@@ -13,8 +13,6 @@ services:
       - $DOCKERDIR/appdata/jellyseerr:/app/config
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
     labels:
       ### Traefik
       - "traefik.enable=true"

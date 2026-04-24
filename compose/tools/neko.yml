@@ -14,8 +14,6 @@ services:
       - "52000-52100:52000-52100/udp"
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       NEKO_EPR: 52000-52100
       NEKO_SCREEN: 1920x1080@30
       NEKO_PASSWORD_ADMIN: $NEKO_PASSWORD_ADMIN

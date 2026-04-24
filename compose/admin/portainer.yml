@@ -15,8 +15,6 @@ services:
       - $DOCKERDIR/appdata/portainer/data:/data
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
     labels:
       ### Traefik
       - "traefik.enable=true"

@@ -11,8 +11,6 @@ services:
       - reverse_proxy
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       CONFIG: /config
       COOKIE_DOMAIN: $DOMAINNAME
       INSECURE_COOKIE: false

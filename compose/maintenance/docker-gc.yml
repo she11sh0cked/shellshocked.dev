@@ -13,8 +13,6 @@ services:
       - $DOCKERDIR/appdata/docker-gc/docker-gc-exclude:/etc/docker-gc-exclude
     environment:
       TZ: $TZ
-      PUID: $PUID
-      PGID: $PGID
       CRON: 0 0 1 * * ? # Everyday at 1am.
       FORCE_IMAGE_REMOVAL: 1
       FORCE_CONTAINER_REMOVAL: 0
