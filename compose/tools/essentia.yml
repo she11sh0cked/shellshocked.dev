@@ -11,6 +11,7 @@ services:
     entrypoint: ["tail", "-f", "/dev/null"]
     volumes:
       - $DOCKERDIR/data/media/music:/music
+      - $DOCKERDIR/scripts/essentia_tag_supported.py:/usr/local/bin/essentia-tag-supported:ro
     environment:
       TZ: $TZ
     labels:
@@ -22,4 +23,4 @@ services:
       ### Ofelia — runs after beets import window; skips already-tagged files
       - "ofelia.enabled=true"
       - "ofelia.job-exec.essentia-tag.schedule=@every 6h"
-      - "ofelia.job-exec.essentia-tag.command=python /app/tag_music.py /music --auto --no-genres --model-dir /app/essentia_models"
+      - "ofelia.job-exec.essentia-tag.command=python /usr/local/bin/essentia-tag-supported /music --auto --no-genres --model-dir /app/essentia_models"
