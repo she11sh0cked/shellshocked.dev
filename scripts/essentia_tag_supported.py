@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """Run the upstream Essentia tagger with codecs this image can decode."""
 
-import importlib.util
+import importlib
 import sys
 
 
-UPSTREAM_TAGGER = "/app/tag_music.py"
+UPSTREAM_APP_DIR = "/app"
 UNSUPPORTED_CODECS = {".opus"}
 
 
 def main():
-    spec = importlib.util.spec_from_file_location("upstream_tag_music", UPSTREAM_TAGGER)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    if UPSTREAM_APP_DIR not in sys.path:
+        sys.path.insert(0, UPSTREAM_APP_DIR)
+
+    module = importlib.import_module("tag_music")
 
     module.AUDIO_EXTENSIONS.difference_update(UNSUPPORTED_CODECS)
     module.main()

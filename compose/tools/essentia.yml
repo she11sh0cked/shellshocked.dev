@@ -23,4 +23,5 @@ services:
       ### Ofelia — runs after beets import window; skips already-tagged files
       - "ofelia.enabled=true"
       - "ofelia.job-exec.essentia-tag.schedule=@every 6h"
+      - "ofelia.job-exec.essentia-tag.no-overlap=true"
       - "ofelia.job-exec.essentia-tag.command=python /usr/local/bin/essentia-tag-supported /music --auto --no-genres --model-dir /app/essentia_models"

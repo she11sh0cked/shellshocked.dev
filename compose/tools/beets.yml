@@ -9,6 +9,10 @@ services:
     profiles: ["apps", "tools", "all"]
     networks:
       - reverse_proxy
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
     volumes:
       - $DOCKERDIR/appdata/beets:/config
       - $DOCKERDIR/data/media/music:/music
@@ -36,4 +40,5 @@ services:
       ### Ofelia
       - "ofelia.enabled=true"
       - "ofelia.job-exec.beets-import.schedule=@every 6h"
+      - "ofelia.job-exec.beets-import.no-overlap=true"
       - "ofelia.job-exec.beets-import.command=sh -c 'export BEETSDIR=/config FPCALC=/usr/bin/fpcalc && /lsiopy/bin/beet import -q /music'"
