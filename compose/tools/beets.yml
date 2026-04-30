@@ -41,4 +41,4 @@ services:
       - "ofelia.enabled=true"
       - "ofelia.job-exec.beets-import.schedule=@every 6h"
       - "ofelia.job-exec.beets-import.no-overlap=true"
-      - "ofelia.job-exec.beets-import.command=sh -c 'export BEETSDIR=/config FPCALC=/usr/bin/fpcalc && /lsiopy/bin/beet import -q /music'"
+      - "ofelia.job-exec.beets-import.command=sh -c 'export BEETSDIR=/config FPCALC=/usr/bin/fpcalc && /lsiopy/bin/beet import -q /music && /lsiopy/bin/beet write'"
