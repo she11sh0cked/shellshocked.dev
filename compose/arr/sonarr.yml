@@ -28,6 +28,12 @@ services:
       # HTTP Services
       - "traefik.http.routers.sonarr-rtr.service=sonarr-svc"
       - "traefik.http.services.sonarr-svc.loadbalancer.server.port=8989"
+      # API router - bypasses OAuth when X-Api-Key header is present
+      - "traefik.http.routers.sonarr-api-rtr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr-api-rtr.rule=Host(`sonarr.$DOMAINNAME`) && PathPrefix(`/api`) && HeadersRegexp(`X-Api-Key`, `.+`)"
+      - "traefik.http.routers.sonarr-api-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.sonarr-api-rtr.service=sonarr-svc"
+      - "traefik.http.routers.sonarr-api-rtr.priority=99"
       ### Homepage
       - "homepage.group=Arr"
       - "homepage.name=Sonarr"

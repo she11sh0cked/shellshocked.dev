@@ -30,6 +30,12 @@ services:
       # HTTP Services
       - "traefik.http.routers.lidarr-rtr.service=lidarr-svc"
       - "traefik.http.services.lidarr-svc.loadbalancer.server.port=8686"
+      # API router - bypasses OAuth when X-Api-Key header is present
+      - "traefik.http.routers.lidarr-api-rtr.entrypoints=websecure"
+      - "traefik.http.routers.lidarr-api-rtr.rule=Host(`lidarr.$DOMAINNAME`) && PathPrefix(`/api`) && HeadersRegexp(`X-Api-Key`, `.+`)"
+      - "traefik.http.routers.lidarr-api-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.lidarr-api-rtr.service=lidarr-svc"
+      - "traefik.http.routers.lidarr-api-rtr.priority=99"
       ### Homepage
       - "homepage.group=Arr"
       - "homepage.name=Lidarr"

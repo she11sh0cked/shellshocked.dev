@@ -27,6 +27,12 @@ services:
       # HTTP Services
       - "traefik.http.routers.bazarr-rtr.service=bazarr-svc"
       - "traefik.http.services.bazarr-svc.loadbalancer.server.port=6767"
+      # API router - bypasses OAuth when X-Api-Key header is present
+      - "traefik.http.routers.bazarr-api-rtr.entrypoints=websecure"
+      - "traefik.http.routers.bazarr-api-rtr.rule=Host(`bazarr.$DOMAINNAME`) && PathPrefix(`/api`) && HeadersRegexp(`X-Api-Key`, `.+`)"
+      - "traefik.http.routers.bazarr-api-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.bazarr-api-rtr.service=bazarr-svc"
+      - "traefik.http.routers.bazarr-api-rtr.priority=99"
       ### Homepage
       - "homepage.group=Arr"
       - "homepage.name=Bazarr"
