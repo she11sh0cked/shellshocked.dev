@@ -30,7 +30,7 @@ services:
       - "traefik.http.services.radarr-svc.loadbalancer.server.port=7878"
       # API router - bypasses OAuth when X-Api-Key header is present
       - "traefik.http.routers.radarr-api-rtr.entrypoints=websecure"
-      - "traefik.http.routers.radarr-api-rtr.rule=Host(`radarr.$DOMAINNAME`) && PathPrefix(`/api`) && HeadersRegexp(`X-Api-Key`, `.+`)"
+      - "traefik.http.routers.radarr-api-rtr.rule=Host(`radarr.$DOMAINNAME`) && PathPrefix(`/api`) && HeaderRegexp(`X-Api-Key`, `.+`)"
       - "traefik.http.routers.radarr-api-rtr.middlewares=chain-no-auth@file"
       - "traefik.http.routers.radarr-api-rtr.service=radarr-svc"
       - "traefik.http.routers.radarr-api-rtr.priority=99"
