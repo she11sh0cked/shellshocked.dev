@@ -14,6 +14,7 @@ services:
     network_mode: "service:gluetun"
     volumes:
       - $DOCKERDIR/appdata/qbittorrent:/config
+      - $DOCKERDIR/scripts/qbittorrent-clean-stale-lock.sh:/custom-cont-init.d/10-clean-stale-qbittorrent-lock:ro
       - $DOCKERDIR/data/torrents:/data/torrents # Ensure that downloads folder is set to /data/torrents in qBittorrent
     environment:
       TZ: $TZ
