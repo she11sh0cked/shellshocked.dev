@@ -22,6 +22,10 @@ services:
       PGID: $PGID
       UMASK_SET: 002
       TORRENTING_PORT: $TORRENTING_PORT
+      DOCKER_MODS: ghcr.io/themepark-dev/theme.park:qbittorrent
+      QBITTORRENT_VERSION: 5.2.0
+      TP_COMMUNITY_THEME: "true"
+      TP_THEME: catppuccin-mocha
     healthcheck:
       test: "curl -sf https://example.com || exit 1"
       interval: 1m
