@@ -27,10 +27,11 @@ services:
       TP_COMMUNITY_THEME: "true"
       TP_THEME: catppuccin-mocha
     healthcheck:
-      test: "curl -sf https://example.com || exit 1"
+      test: "curl -sf http://127.0.0.1:8080 || exit 1"
       interval: 1m
       timeout: 10s
-      retries: 1
+      retries: 3
+      start_period: 2m
     labels:
       - "deunhealth.restart.on.unhealthy=true"
       ### Homepage
