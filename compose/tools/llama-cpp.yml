@@ -17,7 +17,7 @@ services:
       LLAMA_ARG_N_PARALLEL: $LLAMA_CPP_PARALLEL
       LLAMA_API_KEY: $LLAMA_CPP_API_KEY
     volumes:
-      - $DOCKERDIR/data/llama-cpp:/root/.cache
+      - $DOCKERDIR/data/models/llama-cpp:/root/.cache
 
   # Open WebUI - Web UI for local LLMs (llama.cpp)
   open-webui:
@@ -40,6 +40,7 @@ services:
       WEBUI_AUTH: "false"
     volumes:
       - $DOCKERDIR/appdata/open-webui:/app/backend/data
+      - $DOCKERDIR/data/models/open-webui:/app/backend/data/cache/embedding/models
     depends_on:
       - llama-cpp
     labels:

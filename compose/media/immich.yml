@@ -15,6 +15,7 @@ services:
     volumes:
       - $DOCKERDIR/appdata/immich:/config
       - $DOCKERDIR/data/media/photos:/photos
+      - $DOCKERDIR/data/models/immich:/config/machine-learning/models
     environment:
       TZ: $TZ
       PUID: $PUID
