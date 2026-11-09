@@ -24,7 +24,7 @@ services:
       - "traefik.http.routers.dispatcharr-rtr.entrypoints=websecure"
       - "traefik.http.routers.dispatcharr-rtr.rule=Host(`dispatcharr.$DOMAINNAME`)"
       # Middlewares
-      - "traefik.http.routers.dispatcharr-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.dispatcharr-rtr.middlewares=chain-no-auth@file"
       # HTTP Services
       - "traefik.http.routers.dispatcharr-rtr.service=dispatcharr-svc"
       - "traefik.http.services.dispatcharr-svc.loadbalancer.server.port=9191"
