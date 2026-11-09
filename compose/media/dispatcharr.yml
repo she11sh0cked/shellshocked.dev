@@ -1,0 +1,36 @@
+services:
+  # Dispatcharr - IPTV Stream and EPG Manager
+  dispatcharr:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    networks:
+      - reverse_proxy
+    volumes:
+      - $DOCKERDIR/appdata/dispatcharr:/data
+    environment:
+      TZ: $TZ
+      DISPATCHARR_ENV: aio
+      REDIS_HOST: localhost
+      CELERY_BROKER_URL: redis://localhost:6379/0
+      DISPATCHARR_LOG_LEVEL: info
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.dispatcharr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.dispatcharr-rtr.rule=Host(`dispatcharr.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.dispatcharr-rtr.middlewares=chain-oauth@file"
+      # HTTP Services
+      - "traefik.http.routers.dispatcharr-rtr.service=dispatcharr-svc"
+      - "traefik.http.services.dispatcharr-svc.loadbalancer.server.port=9191"
+      ### Homepage
+      - "homepage.group=Media"
+      - "homepage.name=Dispatcharr"
+      - "homepage.icon=dispatcharr.png"
+      - "homepage.href=https://dispatcharr.$DOMAINNAME"
+      - "homepage.description=IPTV Stream and EPG Manager"
