@@ -26,6 +26,10 @@ secrets:
     file: $DOCKERDIR/secrets/wireguard_preshared_key
   wireguard_private_key:
     file: $DOCKERDIR/secrets/wireguard_private_key
+  wireguard_de_preshared_key:
+    file: $DOCKERDIR/secrets/wireguard_de_preshared_key
+  wireguard_de_private_key:
+    file: $DOCKERDIR/secrets/wireguard_de_private_key
   ### ADMIN
   portainer_key:
     file: $DOCKERDIR/secrets/portainer_key
@@ -82,6 +86,7 @@ include:
   - compose/core/socket-proxy.yml
   - compose/core/oauth.yml
   - compose/core/gluetun.yml
+  - compose/core/gluetun-de.yml
   ### ADMIN
   - compose/admin/dockge.yml
   - compose/admin/dozzle.yml

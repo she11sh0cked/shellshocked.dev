@@ -5,10 +5,13 @@ services:
     container_name: dispatcharr
     security_opt:
       - no-new-privileges:true
+    depends_on:
+      gluetun-de:
+        condition: service_healthy
     restart: unless-stopped
     profiles: ["apps", "media", "all"]
-    networks:
-      - reverse_proxy
+    # All traffic leaves through the German VPN exit; Traefik labels live on gluetun-de.
+    network_mode: "service:gluetun-de"
     volumes:
       - $DOCKERDIR/appdata/dispatcharr:/data
     environment:
@@ -17,17 +20,14 @@ services:
       REDIS_HOST: localhost
       CELERY_BROKER_URL: redis://localhost:6379/0
       DISPATCHARR_LOG_LEVEL: info
+    healthcheck:
+      test: "curl -sf -o /dev/null http://127.0.0.1:9191 || exit 1"
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 2m
     labels:
-      ### Traefik
-      - "traefik.enable=true"
-      # HTTP Routers
-      - "traefik.http.routers.dispatcharr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.dispatcharr-rtr.rule=Host(`dispatcharr.$DOMAINNAME`)"
-      # Middlewares
-      - "traefik.http.routers.dispatcharr-rtr.middlewares=chain-no-auth@file"
-      # HTTP Services
-      - "traefik.http.routers.dispatcharr-rtr.service=dispatcharr-svc"
-      - "traefik.http.services.dispatcharr-svc.loadbalancer.server.port=9191"
+      - "deunhealth.restart.on.unhealthy=true"
       ### Homepage
       - "homepage.group=Media"
       - "homepage.name=Dispatcharr"

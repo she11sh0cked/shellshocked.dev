@@ -1,0 +1,49 @@
+services:
+  # Gluetun DE - German VPN exit for Dispatcharr
+  # German broadcasters geo-block the homelab's own (French) IP address.
+  gluetun-de:
+    image: qmcgaw/gluetun
+    container_name: gluetun-de
+    entrypoint: ["/scripts/secrets_loader.sh", "/gluetun-entrypoint"]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    networks:
+      reverse_proxy:
+        # Keeps http://dispatcharr:9191 working for Jellyfin.
+        aliases:
+          - dispatcharr
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    volumes:
+      - $DOCKERDIR/scripts:/scripts:ro
+      - $DOCKERDIR/appdata/gluetun-de:/gluetun
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      VPN_SERVICE_PROVIDER: $VPN_SERVICE_PROVIDER
+      VPN_TYPE: wireguard
+      WIREGUARD_PRESHARED_KEY_FILE: /run/secrets/wireguard_de_preshared_key
+      WIREGUARD_PRIVATE_KEY_FILE: /run/secrets/wireguard_de_private_key
+      WIREGUARD_ADDRESSES: $WIREGUARD_DE_ADDRESSES
+      SERVER_COUNTRIES: Germany
+      # Dispatcharr web UI and outputs, reached through Traefik and by Jellyfin.
+      FIREWALL_INPUT_PORTS: 9191
+    secrets:
+      - wireguard_de_preshared_key
+      - wireguard_de_private_key
+    labels:
+      ### Traefik
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.dispatcharr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.dispatcharr-rtr.rule=Host(`dispatcharr.$DOMAINNAME`)"
+      # Middlewares
+      - "traefik.http.routers.dispatcharr-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.dispatcharr-rtr.service=dispatcharr-svc"
+      - "traefik.http.services.dispatcharr-svc.loadbalancer.server.port=9191"
