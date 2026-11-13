@@ -1,0 +1,15 @@
+{
+  "name": "Graveyard Hider",
+  "version": "1.0.0",
+  "description": "Hides every channel in the dead-channel group (IPTV Checker's Graveyard) from all outputs (M3U, EPG, Xtream) and unhides it once it has left the group. Runs every hour at :20 through Dispatcharr's scheduler. Only unhides channels it hid itself.",
+  "author": "local",
+  "license": "MIT",
+  "fields": [
+    {"id": "group_name", "label": "Dead-channel group", "type": "string", "default": "Graveyard", "help_text": "Channels in this group are hidden from all outputs."}
+  ],
+  "actions": [
+    {"id": "preview", "label": "Preview", "button_label": "Preview", "description": "Show which channels would be hidden or unhidden. Changes nothing.", "button_variant": "outline", "button_color": "blue"},
+    {"id": "apply", "label": "Apply", "button_label": "Apply", "description": "Hide and unhide now, and arm the hourly schedule.", "button_variant": "filled", "button_color": "orange"},
+    {"id": "undo", "label": "Unhide all", "button_label": "Unhide all", "description": "Unhide every channel this plugin has hidden and stop the schedule.", "button_variant": "filled", "button_color": "red", "confirm": {"message": "Unhide every channel Graveyard Hider has hidden and stop its schedule?"}}
+  ]
+}

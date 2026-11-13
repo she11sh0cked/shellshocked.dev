@@ -1,0 +1,55 @@
+{
+  "name": "Feed Dedup",
+  "version": "1.3.0",
+  "description": "Hides duplicate feeds of the same iptv-org channel (tvg-id channel@feed). Pick the feed to keep per channel in the dropdowns below, or leave it on Automatic: alive first, then the iptv-org main feed, then a feed broadcast in the preferred country, then the lowest channel number. Runs after every M3U refresh and every hour at :25 and only unhides channels it hid itself.",
+  "author": "local",
+  "license": "MIT",
+  "fields": [
+    {
+      "id": "graveyard_group",
+      "label": "Dead-channel group",
+      "type": "string",
+      "default": "Graveyard",
+      "help_text": "Channels in this group (IPTV Checker's dead group) count as dead and lose against alive feeds."
+    },
+    {
+      "id": "preferred_country",
+      "label": "Preferred country",
+      "type": "string",
+      "default": "DE",
+      "help_text": "ISO code. When no main feed is present, a feed broadcast in this country wins."
+    }
+  ],
+  "actions": [
+    {
+      "id": "preview",
+      "label": "Preview",
+      "button_label": "Preview",
+      "description": "Show which channels would be hidden or unhidden. Changes nothing.",
+      "button_variant": "outline",
+      "button_color": "blue"
+    },
+    {
+      "id": "apply",
+      "label": "Apply",
+      "button_label": "Apply",
+      "description": "Hide duplicate feeds now and arm the hourly schedule. Also runs after every M3U refresh.",
+      "button_variant": "filled",
+      "button_color": "orange",
+      "events": [
+        "m3u_refresh"
+      ]
+    },
+    {
+      "id": "undo",
+      "label": "Undo all",
+      "button_label": "Unhide all",
+      "description": "Unhide every channel this plugin has hidden and stop the schedule.",
+      "button_variant": "filled",
+      "button_color": "red",
+      "confirm": {
+        "message": "Unhide every channel Feed Dedup has hidden?"
+      }
+    }
+  ]
+}
